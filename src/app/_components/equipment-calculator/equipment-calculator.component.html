@@ -1,0 +1,36 @@
+<ng-container *ngIf="(store.state$ | async) as state">
+    <mat-card>
+        <mat-card-content>
+            <app-base-data-input (changed)="onBaseDataChanged($event)"></app-base-data-input>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="state.customUnitSelected">
+        <mat-card-content>
+            <app-custom-unit-input (changed)="onCustomUnitDataChanged($event)"></app-custom-unit-input>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-content>
+            <app-stat-weighting (changed)="onStatWeightingDataChanged($event)"></app-stat-weighting>
+        </mat-card-content>
+    </mat-card>
+
+    <button
+        (click)="calculateEquipment()"
+        [class.spinner]="state.status.loading"
+        [disabled]="state.status.loading"
+        class="submit" color="primary"
+        mat-raised-button>Ausrüstung berechnen
+    </button>
+
+    <mat-card *ngIf="state.set as set">
+        <mat-card-content>
+            <app-equipment-set
+                [schmiedekunst]="state.schmiedekunst"
+                [set]="set"
+                [unit]="state.selectedUnit"></app-equipment-set>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

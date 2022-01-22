@@ -1,0 +1,4 @@
+export enum ErrorType {
+    ELEMENT_MISMATCH = 'ELEMENT_MISMATCH',
+    INVALID_UNIT = 'INVALID_UNIT',
+}

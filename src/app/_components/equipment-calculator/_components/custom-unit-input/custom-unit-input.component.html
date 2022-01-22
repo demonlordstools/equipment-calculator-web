@@ -1,0 +1,34 @@
+<form [formGroup]="form">
+    <!-- not needed yet -->
+    <!--div>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>AP</mat-label>
+            <input formControlName="ap" matInput min="0" type="number" value="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>VP</mat-label>
+            <input formControlName="vp" matInput min="0" type="number" value="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>HP</mat-label>
+            <input formControlName="hp" matInput min="0" type="number" value="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>MP</mat-label>
+            <input formControlName="mp" matInput min="0" type="number" value="0">
+        </mat-form-field>
+    </div-->
+    <div>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>Kraft</mat-label>
+            <input formControlName="carryWeight" matInput min="0" type="number" value="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="custom-input">
+            <mat-label>Element</mat-label>
+            <mat-select formControlName="element">
+                <mat-option *ngFor="let element of elements" [value]="element">{{element}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-checkbox class="custom-input" formControlName="ranged">Fernkampf erlaubt</mat-checkbox>
+    </div>
+</form>

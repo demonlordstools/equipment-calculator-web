@@ -1,0 +1,19 @@
+<div class="header">
+    <h1 class="title">Demonlords Ausrüstungsrechner by Skinny</h1>
+    <button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" mat-icon-button>
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</div>
+
+<ng-content></ng-content>
+
+<mat-menu #menu="matMenu">
+    <button (click)="openHelp()" mat-menu-item>
+        <mat-icon>help_outline</mat-icon>
+        <span>Hilfe</span>
+    </button>
+    <button (click)="openAbout()" mat-menu-item>
+        <mat-icon>info</mat-icon>
+        <span>About</span>
+    </button>
+</mat-menu>

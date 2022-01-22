@@ -1,0 +1,21 @@
+{
+    "name": "dl-equipment-calculator-backend",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "tsc && npm run copy-server && npm run copy-shared",
+        "copy-server": "cp -r ../../dist/out-tsc/backend ../../dist/dl-equipment-calculator-web/",
+        "copy-shared": "cp -r ../../dist/out-tsc/shared ../../dist/dl-equipment-calculator-web/"
+    },
+    "dependencies": {
+        "express": "^4.17.2"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.13",
+        "@types/node": "^12.20.42",
+        "concurrently": "^7.0.0",
+        "eslint": "^8.7.0",
+        "prettier": "^2.5.1",
+        "ts-node": "^10.4.0",
+        "typescript": "~4.5.2"
+    }
+}

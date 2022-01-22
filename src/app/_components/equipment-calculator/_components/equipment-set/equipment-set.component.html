@@ -1,0 +1,63 @@
+<ng-container *ngIf="set">
+    <div class="set-items">
+        <div class="set-row">
+            <span class="set-label">Waffe:</span>
+            <span class="set-value">{{ set.weapon.name }}</span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">Schild:</span>
+            <span class="set-value">{{ set.shield.name }}</span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">Rüstung:</span>
+            <span class="set-value">{{ set.armour.name }}</span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">Helm:</span>
+            <span class="set-value">{{ set.helmet.name }}</span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">Schmuck:</span>
+            <span class="set-value">{{ set.accessory.name }}</span>
+        </div>
+    </div>
+    <div class="set-stats">
+        <div class="set-row">
+            <span class="set-label">AP:</span>
+            <span class="set-value">
+                <span class="value">{{ totalAP(set, schmiedekunst) }}</span>
+                <span class="icons">
+                    <img *ngIf="set.weapon.ranged" src="assets/images/ranged.png">
+                    <img *ngFor="let elementIcon of getOffenseElementIcons()" [src]="elementIcon">
+                </span>
+            </span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">VP:</span>
+            <span class="set-value">
+                <span class="value">{{ totalVP(set, schmiedekunst) }}</span>
+                <span class="icons">
+                    <img *ngFor="let elementIcon of getDefenseElementIcons()" [src]="elementIcon">
+                </span>
+            </span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">HP:</span>
+            <span class="set-value">
+                <span class="value">{{ totalHP(set, schmiedekunst) }}</span>
+            </span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">MP:</span>
+            <span class="set-value">
+                <span class="value">{{ totalMP(set, schmiedekunst) }}</span>
+            </span>
+        </div>
+        <div class="set-row">
+            <span class="set-label">Kraft:</span>
+            <span class="set-value">
+                <span class="value">{{ totalWeight(set) }}</span>
+            </span>
+        </div>
+    </div>
+</ng-container>
