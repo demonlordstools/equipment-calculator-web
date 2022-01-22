@@ -1,6 +1,9 @@
 {
     "name": "dl-equipment-calculator-web",
-    "version": "0.0.0",
+    "version": "1.0.0",
+    "engines": {
+        "node": "14.x"
+    },
     "scripts": {
         "ng": "ng",
         "start": "node dist/dl-equipment-calculator-web/backend/server.js",
