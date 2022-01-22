@@ -4,6 +4,7 @@
             <mat-label>Waffenschmiede</mat-label>
             <input formControlName="waffenschmiede" matInput max="10" min="0" type="number" value="0">
         </mat-form-field>
+
         <mat-form-field appearance="outline" class="calc-input">
             <mat-label>Schmiedekunst</mat-label>
             <input formControlName="schmiedekunst" matInput min="0" type="number" value="0">
@@ -41,5 +42,17 @@
                 >{{ element }}</mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-checkbox
+            [disabled]="!selectedUnit?.ranged"
+            class="calc-input"
+            formControlName="rangedRequired">
+            muss FK-Waffe tragen
+        </mat-checkbox>
+        <mat-checkbox
+            [disabled]="!selectedUnit?.ranged"
+            class="calc-input"
+            formControlName="rangedForbidden">
+            darf keine FK-Waffe tragen
+        </mat-checkbox>
     </div>
 </form>

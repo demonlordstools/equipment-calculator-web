@@ -21,7 +21,7 @@ export class CustomUnitInputComponent implements OnInit, OnDestroy {
         mp: new FormControl(0, [NUMBERS_ONLY]),
         carryWeight: new FormControl(0, [NUMBERS_ONLY]),
         element: new FormControl(Element.NONE),
-        ranged: new FormControl(false),
+        ranged: new FormControl(true),
     });
 
     elements = elements;

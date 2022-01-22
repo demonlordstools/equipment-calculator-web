@@ -88,16 +88,20 @@ export function getWantedDefenseElements(unitElement: Element, targetElement?: E
  * checks if a desired attack element is achievable for a unit's element.
  */
 export function attackElementAchievable(unitElement: Element, targetElement?: Element): boolean {
+    console.warn('>>> attackElementAchievable - checking elements:', unitElement, targetElement);
     if (!targetElement) return true;
     if (!isValidElementCombination(unitElement, targetElement)) return false;
-    if ([Element.FIRE_AIR, Element.EARTH_ICE].includes(targetElement)) return unitElement !== Element.NONE;
-    if (targetElement === Element.NONE && unitElement !== Element.NONE) return false;
-    if (
-        [Element.FIRE_AIR, Element.EARTH_ICE].includes(unitElement) &&
-        [Element.FIRE, Element.EARTH, Element.ICE, Element.AIR].includes(targetElement)
-    )
-        return false;
-    return targetElement === unitElement;
+    if (unitElement === Element.NONE) {
+        return [Element.NONE, Element.FIRE, Element.EARTH, Element.ICE, Element.AIR].includes(targetElement);
+    }
+    if ([Element.FIRE, Element.EARTH, Element.ICE, Element.AIR].includes(unitElement)) {
+        return targetElement === unitElement || [Element.FIRE_AIR, Element.EARTH_ICE].includes(targetElement);
+    }
+    if ([Element.FIRE_AIR, Element.EARTH_ICE].includes(unitElement)) {
+        return targetElement === unitElement;
+    }
+
+    return false;
 }
 
 /**
@@ -107,13 +111,15 @@ export function defenseElementAchievable(unitElement: Element, targetElement?: E
     if (!targetElement) return true;
     if (!isValidElementCombination(unitElement, targetElement)) return false;
     if ([Element.FIRE_AIR, Element.EARTH_ICE].includes(targetElement)) return true;
-    if (targetElement === Element.NONE && unitElement !== Element.NONE) return false;
-    if (
-        [Element.FIRE_AIR, Element.EARTH_ICE].includes(unitElement) &&
-        [Element.FIRE, Element.EARTH, Element.ICE, Element.AIR].includes(targetElement)
-    )
-        return false;
-    return targetElement === unitElement;
+    if (unitElement === Element.NONE) return true;
+    if ([Element.FIRE, Element.EARTH, Element.ICE, Element.AIR].includes(unitElement)) {
+        return targetElement === unitElement || [Element.FIRE_AIR, Element.EARTH_ICE].includes(targetElement);
+    }
+    if ([Element.FIRE_AIR, Element.EARTH_ICE].includes(unitElement)) {
+        return targetElement === unitElement;
+    }
+
+    return false;
 }
 
 export function combineElements(...elements: Array<Element>): Element {

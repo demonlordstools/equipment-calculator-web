@@ -28,6 +28,8 @@ export class EquipmentService {
     getEquipment(
         unit: Unit,
         waffenschmiede: number,
+        rangedRequired: boolean,
+        rangedForbidden: boolean,
         apWeight: number,
         vpWeight: number,
         hpWeight: number,
@@ -45,12 +47,25 @@ export class EquipmentService {
                 accessory: ALL_ACCESSORIES[getRandomInt(ALL_ACCESSORIES.length - 1)],
             });
         }
-        const cacheKey = `${unit.name}:${waffenschmiede}:${apWeight}:${vpWeight}:${hpWeight}:${mpWeight}:${elementAttack}:${elementDefense}`;
-        const params = toHttpParams({
-            carryWeight: unit.carryWeight,
-            element: unit.element,
-            ranged: unit.ranged,
+        const cacheKey = this.getCacheKey(
+            unit.name,
             waffenschmiede,
+            rangedRequired,
+            rangedForbidden,
+            apWeight,
+            vpWeight,
+            hpWeight,
+            mpWeight,
+            elementAttack,
+            elementDefense
+        );
+        const params = toHttpParams({
+            unitCarryWeight: unit.carryWeight,
+            unitElement: unit.element,
+            unitRanged: unit.ranged,
+            waffenschmiede,
+            rangedRequired,
+            rangedForbidden,
             elementAttack,
             elementDefense,
             apWeight,
@@ -59,5 +74,9 @@ export class EquipmentService {
             mpWeight,
         });
         return this.http.get<EquipmentSet>('/equipment', { params }).pipe(cached(this.equipmentCache, cacheKey));
+    }
+
+    private getCacheKey(...objects: Array<unknown>): string {
+        return objects.join(':');
     }
 }

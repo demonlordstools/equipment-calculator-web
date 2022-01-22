@@ -1,7 +1,8 @@
 <ng-container *ngIf="(store.state$ | async) as state">
     <mat-card>
         <mat-card-content>
-            <app-base-data-input (changed)="onBaseDataChanged($event)"></app-base-data-input>
+            <app-base-data-input (changed)="onBaseDataChanged($event)"
+                                 [selectedUnit]="state.selectedUnit"></app-base-data-input>
         </mat-card-content>
     </mat-card>
 

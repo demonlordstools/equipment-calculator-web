@@ -18,12 +18,15 @@ import {
 import { EquipmentSet, getWeightedTotalStats } from '../shared/_types/equipment-set';
 import { ElementMismatchError } from '../shared/_types/element-mismatch-error';
 import { Request, Response } from 'express';
+import { InvalidItemCombinationError } from '../shared/_types/invalid-item-combination-error';
 
 export function calculateEquipmentController(req: Request, res: Response): void {
-    const carryWeight = intParameter(req, 'carryWeight');
-    const element = elementParameter(req, 'element');
-    const ranged = booleanParameter(req, 'ranged');
+    const carryWeight = intParameter(req, 'unitCarryWeight');
+    const element = elementParameter(req, 'unitElement');
+    const ranged = booleanParameter(req, 'unitRanged');
     const waffenschmiede = intParameter(req, 'waffenschmiede');
+    const rangedRequired = booleanParameter(req, 'rangedRequired');
+    const rangedForbidden = booleanParameter(req, 'rangedForbidden');
     const apWeight = intParameter(req, 'apWeight');
     const vpWeight = intParameter(req, 'vpWeight');
     const hpWeight = intParameter(req, 'hpWeight');
@@ -36,6 +39,8 @@ export function calculateEquipmentController(req: Request, res: Response): void 
         element,
         ranged,
         waffenschmiede,
+        rangedRequired,
+        rangedForbidden,
         apWeight,
         vpWeight,
         hpWeight,
@@ -48,10 +53,12 @@ export function calculateEquipmentController(req: Request, res: Response): void 
 }
 
 function calculateEquipment(
-    carryWeight: number,
-    element: Element,
-    ranged: boolean,
+    unitCarryWeight: number,
+    unitElement: Element,
+    unitRanged: boolean,
     waffenschmiede: number,
+    rangedRequired: boolean,
+    rangedForbidden: boolean,
     apWeight: number,
     vpWeight: number,
     hpWeight: number,
@@ -60,33 +67,55 @@ function calculateEquipment(
     elementDefense?: Element
 ): Promise<EquipmentSet> {
     return new Promise<EquipmentSet>((resolve, reject) => {
-        if (!isValidElementCombination(element, elementAttack, elementDefense)) {
+        if ((rangedRequired && rangedForbidden) || (rangedRequired && !unitRanged)) {
+            reject(
+                new InvalidItemCombinationError(
+                    `Invalid ranged parameters. Unit can use ranged weapons: ${unitRanged} | rangedRequired: ${rangedRequired} | rangedForbidden: ${rangedForbidden}`
+                )
+            );
+        }
+        if (!isValidElementCombination(unitElement, elementAttack, elementDefense)) {
             reject(
                 new ElementMismatchError(
-                    `Invalid element combination "${element}", "${elementAttack}" and "${elementDefense}"!`
+                    `Invalid element combination "${unitElement}", "${elementAttack}" and "${elementDefense}"!`
                 )
             );
             return;
         }
 
-        const wantedWeaponElements = getWantedWeaponElements(element, elementAttack);
-        const wantedDefenseElements = getWantedDefenseElements(element, elementDefense);
+        const wantedWeaponElements = getWantedWeaponElements(unitElement, elementAttack);
+        const wantedDefenseElements = getWantedDefenseElements(unitElement, elementDefense);
+        const maxWeight = unitCarryWeight + MAX_WEIGHT_BONUS;
 
-        const validWeapons = filterInvalidItems(carryWeight, ranged, waffenschmiede, ALL_WEAPONS, wantedWeaponElements);
-        const validHelmets = filterInvalidItems(carryWeight, ranged, waffenschmiede, ALL_HELMETS);
-        const validArmour = filterInvalidItems(carryWeight, ranged, waffenschmiede, ALL_ARMOUR, wantedDefenseElements);
+        const validWeapons = filterInvalidItems(
+            maxWeight,
+            unitRanged,
+            waffenschmiede,
+            ALL_WEAPONS,
+            wantedWeaponElements,
+            rangedRequired,
+            rangedForbidden
+        );
+        const validHelmets = filterInvalidItems(maxWeight, unitRanged, waffenschmiede, ALL_HELMETS);
+        const validArmour = filterInvalidItems(
+            maxWeight,
+            unitRanged,
+            waffenschmiede,
+            ALL_ARMOUR,
+            wantedDefenseElements
+        );
         const validShields = filterInvalidItems(
-            carryWeight,
-            ranged,
+            maxWeight,
+            unitRanged,
             waffenschmiede,
             ALL_SHIELDS,
             wantedDefenseElements
         );
-        const validAccessories = filterInvalidItems(carryWeight, ranged, waffenschmiede, ALL_ACCESSORIES);
+        const validAccessories = filterInvalidItems(maxWeight, unitRanged, waffenschmiede, ALL_ACCESSORIES);
 
         getBestItemCombination(
-            element,
-            carryWeight,
+            unitElement,
+            unitCarryWeight,
             apWeight,
             vpWeight,
             hpWeight,
@@ -106,7 +135,7 @@ function calculateEquipment(
 
 function getBestItemCombination(
     element: Element,
-    maxWeight: number,
+    carryWeight: number,
     apWeight: number,
     vpWeight: number,
     hpWeight: number,
@@ -124,6 +153,7 @@ function getBestItemCombination(
         let validItemCombinations = 0;
         let result: EquipmentSet | undefined = undefined;
         const start = new Date();
+        const maxWeight = carryWeight + MAX_WEIGHT_BONUS;
 
         for (const weapon of validWeapons) {
             if (targetAttackElement && combineElements(element, weapon.element) !== targetAttackElement) continue;
@@ -140,7 +170,7 @@ function getBestItemCombination(
                         if (!validWeightAndElements(maxWeight, weapon, armour, shield, helmet)) continue;
                         for (const accessory of validAccessories) {
                             totalIterations++;
-                            if (validWeightAndElements(maxWeight, weapon, armour, shield, helmet, accessory)) {
+                            if (validWeightAndElements(carryWeight, weapon, armour, shield, helmet, accessory)) {
                                 validItemCombinations++;
                                 const newSet: EquipmentSet = { weapon, armour, shield, helmet, accessory };
                                 result =
@@ -165,16 +195,20 @@ function getBestItemCombination(
 }
 
 function filterInvalidItems(
-    carryWeight: number,
+    maxWeight: number,
     unitRanged: boolean,
     waffenschmiede: number,
     equipment: Array<Equipment>,
-    wantedElements: Array<Element> = []
+    wantedElements: Array<Element> = [],
+    rangedRequired = false,
+    rangedForbidden = false
 ): Array<Equipment> {
     return equipment.filter(
         ({ element, ranged, requiredWaffenschmiede, weight }) =>
             waffenschmiede >= requiredWaffenschmiede &&
-            carryWeight + MAX_WEIGHT_BONUS >= weight &&
+            maxWeight >= weight &&
+            !(rangedRequired && !ranged) &&
+            !(rangedForbidden && ranged) &&
             (unitRanged || !ranged) &&
             (wantedElements.length === 0 || wantedElements.includes(element))
     );

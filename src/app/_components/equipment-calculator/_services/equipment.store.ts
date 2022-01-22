@@ -87,6 +87,8 @@ export class EquipmentStore {
                     waffenschmiede,
                     elementAttack,
                     elementDefense,
+                    rangedRequired,
+                    rangedForbidden,
                     apWeight,
                     vpWeight,
                     hpWeight,
@@ -97,6 +99,8 @@ export class EquipmentStore {
                               .getEquipment(
                                   selectedUnit,
                                   waffenschmiede,
+                                  rangedRequired,
+                                  rangedForbidden,
                                   apWeight,
                                   vpWeight,
                                   hpWeight,
@@ -122,12 +126,21 @@ export class EquipmentStore {
     }
 
     private onUpdateBaseData(action: UpdateBaseData): Observable<Partial<EquipmentState>> {
-        const { waffenschmiede, schmiedekunst, selectedUnit, elementAttack, elementDefense } = action.data;
+        const {
+            waffenschmiede,
+            schmiedekunst,
+            selectedUnit: unitName,
+            elementAttack,
+            elementDefense,
+            rangedRequired,
+            rangedForbidden,
+        } = action.data;
         return this.state$.pipe(
             take(1),
             map((state) => {
                 const customUnitWasSelectedBefore = state.customUnitSelected;
-                const customUnitIsSelectedNow = selectedUnit === CUSTOM_UNIT_NAME;
+                const customUnitIsSelectedNow = unitName === CUSTOM_UNIT_NAME;
+                const selectedUnit = unitByName(unitName);
                 const stateUpdate: Partial<EquipmentState> = {
                     ...state,
                     waffenschmiede,
@@ -135,12 +148,14 @@ export class EquipmentStore {
                     elementAttack,
                     elementDefense,
                     customUnitSelected: customUnitIsSelectedNow,
+                    rangedRequired: rangedRequired && selectedUnit?.ranged,
+                    rangedForbidden: rangedForbidden && selectedUnit?.ranged,
                     ...IDLE_STATE,
                 };
                 if (!(customUnitWasSelectedBefore && customUnitIsSelectedNow)) {
                     // Don't update the selected unit if it was the custom unit before the update and has not changed.
                     // Otherwise custom stats set previously would be lost.
-                    stateUpdate.selectedUnit = unitByName(selectedUnit);
+                    stateUpdate.selectedUnit = selectedUnit;
                 }
 
                 return stateUpdate;

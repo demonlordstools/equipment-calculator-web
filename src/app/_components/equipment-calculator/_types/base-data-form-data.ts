@@ -6,4 +6,6 @@ export interface BaseDataFormData {
     selectedUnit: string;
     elementAttack?: Element;
     elementDefense?: Element;
+    rangedRequired: boolean;
+    rangedForbidden: boolean;
 }

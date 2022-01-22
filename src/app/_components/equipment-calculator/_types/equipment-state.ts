@@ -9,6 +9,8 @@ export class EquipmentState {
     selectedUnit?: Unit;
     elementAttack?: Element;
     elementDefense?: Element;
+    rangedRequired = false;
+    rangedForbidden = false;
 
     customUnitSelected = false;
 
