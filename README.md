@@ -1,7 +1,5 @@
 # DlEquipmentCalculatorWeb
 
-Erstmal nur ein Prototyp, aber die Grundfunktionalität sollte da sein. Die nächsten TODOs sind:
+Erstmal nur ein Prototyp, aber die Grundfunktionalität sollte da sein. Weitere geplante Features in den Issues.
 
-* Validierung von Eingaben, Fehleranzeige direkt am Feld (vor allem Elemente!)
-* Kraftanpassung
-
+Bei Fragen und Vorschlägen gerne bei Skinny ingame oder im Discord melden.
