@@ -48,7 +48,9 @@ export class EquipmentService {
             });
         }
         const cacheKey = this.getCacheKey(
-            unit.name,
+            unit.carryWeight,
+            unit.element,
+            unit.ranged,
             waffenschmiede,
             rangedRequired,
             rangedForbidden,

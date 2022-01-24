@@ -2,12 +2,12 @@
     <div>
         <mat-form-field appearance="outline" class="calc-input">
             <mat-label>Waffenschmiede</mat-label>
-            <input formControlName="waffenschmiede" matInput max="10" min="0" type="number" value="0">
+            <input formControlName="waffenschmiede" matInput max="10" min="0" type="number">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="calc-input">
             <mat-label>Schmiedekunst</mat-label>
-            <input formControlName="schmiedekunst" matInput min="0" type="number" value="0">
+            <input formControlName="schmiedekunst" matInput min="0" type="number">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="calc-input">
@@ -41,6 +41,12 @@
                     [value]="element"
                 >{{ element }}</mat-option>
             </mat-select>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="outline" class="calc-input">
+            <mat-label>Kraft</mat-label>
+            <input formControlName="carryWeight" matInput min="0" type="number">
         </mat-form-field>
         <mat-checkbox
             [disabled]="!selectedUnit?.ranged"

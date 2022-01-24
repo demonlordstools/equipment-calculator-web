@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ALL_UNITS, Unit } from '../../../../_types/unit';
 import { NUMBERS_ONLY } from '../../../../_util/validators';
@@ -11,9 +11,13 @@ import { elements } from 'src/shared/_types/element';
     templateUrl: './base-data-input.component.html',
     styleUrls: ['./base-data-input.component.scss'],
 })
-export class BaseDataInputComponent implements OnInit, OnDestroy {
+export class BaseDataInputComponent implements OnInit, OnDestroy, OnChanges {
     @Input() selectedUnit?: Unit;
     @Output() changed = new EventEmitter<BaseDataFormData>();
+
+    allUnits = [...ALL_UNITS.keys()];
+    elements = elements;
+    subscriptions = new CompositeSubscription();
 
     rangedRequiredControl = new FormControl(false);
     rangedForbiddenControl = new FormControl(false);
@@ -24,12 +28,10 @@ export class BaseDataInputComponent implements OnInit, OnDestroy {
         selectedUnit: new FormControl(),
         elementAttack: new FormControl(),
         elementDefense: new FormControl(),
+        carryWeight: new FormControl(this.selectedUnit?.carryWeight),
         rangedRequired: this.rangedRequiredControl,
         rangedForbidden: this.rangedForbiddenControl,
     });
-    allUnits = [...ALL_UNITS.keys()];
-    elements = elements;
-    subscriptions = new CompositeSubscription();
 
     unitName(index: number, name: string): string {
         return name;
@@ -53,6 +55,11 @@ export class BaseDataInputComponent implements OnInit, OnDestroy {
                 this.changed.emit(changes);
             })
         );
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        const updatedUnit = changes['selectedUnit'].currentValue;
+        this.form?.patchValue({ carryWeight: updatedUnit?.carryWeight, rangedRequired: false, rangedForbidden: false });
     }
 
     ngOnDestroy(): void {

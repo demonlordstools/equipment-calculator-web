@@ -132,14 +132,14 @@ export class EquipmentStore {
             selectedUnit: unitName,
             elementAttack,
             elementDefense,
+            carryWeight,
             rangedRequired,
             rangedForbidden,
         } = action.data;
         return this.state$.pipe(
             take(1),
             map((state) => {
-                const customUnitWasSelectedBefore = state.customUnitSelected;
-                const customUnitIsSelectedNow = unitName === CUSTOM_UNIT_NAME;
+                const unitChanged = state.selectedUnit?.name !== unitName;
                 const selectedUnit = unitByName(unitName);
                 const stateUpdate: Partial<EquipmentState> = {
                     ...state,
@@ -147,15 +147,19 @@ export class EquipmentStore {
                     schmiedekunst,
                     elementAttack,
                     elementDefense,
-                    customUnitSelected: customUnitIsSelectedNow,
+                    customUnitSelected: unitName === CUSTOM_UNIT_NAME,
                     rangedRequired: rangedRequired && selectedUnit?.ranged,
                     rangedForbidden: rangedForbidden && selectedUnit?.ranged,
                     ...IDLE_STATE,
                 };
-                if (!(customUnitWasSelectedBefore && customUnitIsSelectedNow)) {
-                    // Don't update the selected unit if it was the custom unit before the update and has not changed.
-                    // Otherwise custom stats set previously would be lost.
+                if (unitChanged) {
                     stateUpdate.selectedUnit = selectedUnit;
+                } else {
+                    // Don't update the selected unit if it has not changed.
+                    // Otherwise, custom stats set previously would be lost.
+                    if (stateUpdate.selectedUnit) {
+                        stateUpdate.selectedUnit.carryWeight = carryWeight || selectedUnit?.carryWeight || 0;
+                    }
                 }
 
                 return stateUpdate;
