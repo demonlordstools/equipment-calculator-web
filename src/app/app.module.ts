@@ -15,6 +15,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ContextComponent } from './_components/context/context.component';
 import { EquipmentCalculatorComponent } from './_components/equipment-calculator/equipment-calculator.component';
@@ -55,6 +56,7 @@ import { AppComponent } from './app.component';
         RouterModule,
         AppRoutingModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
     ],
     providers: [],
     bootstrap: [AppComponent],
