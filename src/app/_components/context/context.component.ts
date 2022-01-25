@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-context',
@@ -11,11 +12,11 @@ import { MatDialog } from '@angular/material/dialog';
 export class ContextComponent {
     constructor(private dialog: MatDialog) {}
 
-    openHelp() {
+    openHelp(): void {
         this.dialog.open(HelpDialogComponent);
     }
 
-    openAbout() {
+    openAbout(): void {
         this.dialog.open(AboutDialogComponent);
     }
 }

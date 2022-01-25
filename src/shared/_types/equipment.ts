@@ -37,8 +37,8 @@ export function mp(equipment: Equipment, schmiedekunst: number): number {
 }
 
 export function validWeightAndElements(maxWeight: number, ...equipment: Array<Equipment>): boolean {
-    let elements = equipment.map((eq) => eq.element);
-    let totalWeight = equipment.reduce((acc, curr) => acc + curr.weight, 0);
+    const elements = equipment.map((eq) => eq.element);
+    const totalWeight = equipment.reduce((acc, curr) => acc + curr.weight, 0);
     return isValidElementCombination(...elements) && totalWeight <= maxWeight;
 }
 

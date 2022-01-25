@@ -5,7 +5,7 @@ import { Cache } from '../_types/cache';
 const TTL = 3 * 60 * 1000;
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class CacheService {
     private caches: Map<string, Cache<unknown>> = new Map<string, Cache<unknown>>();

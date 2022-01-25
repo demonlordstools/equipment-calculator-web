@@ -1,5 +1,6 @@
-import { UnitType } from './unit-type';
 import { Element } from '../../shared/_types/element';
+
+import { UnitType } from './unit-type';
 
 export const CUSTOM_UNIT_NAME = 'Custom';
 

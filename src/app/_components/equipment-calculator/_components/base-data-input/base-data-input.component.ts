@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { elements } from 'src/shared/_types/element';
+
 import { ALL_UNITS, Unit } from '../../../../_types/unit';
 import { NUMBERS_ONLY } from '../../../../_util/validators';
 import { BaseDataFormData } from '../../_types/base-data-form-data';
 import { CompositeSubscription } from '../../../../_types/composite-subscription';
-import { elements } from 'src/shared/_types/element';
 
 @Component({
     selector: 'app-base-data-input',

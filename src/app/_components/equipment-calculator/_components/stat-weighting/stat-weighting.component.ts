@@ -1,8 +1,9 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { tap } from 'rxjs';
+
 import { NUMBERS_ONLY } from '../../../../_util/validators';
 import { CompositeSubscription } from '../../../../_types/composite-subscription';
-import { tap } from 'rxjs';
 import { StatWeightingFormData } from '../../_types/stat-weighting-form-data';
 
 @Component({

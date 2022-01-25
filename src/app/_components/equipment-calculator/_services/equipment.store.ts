@@ -12,6 +12,7 @@ import {
     Subject,
     take,
 } from 'rxjs';
+
 import { EquipmentState, errorState, IDLE_STATE, LOADING_STATE } from '../_types/equipment-state';
 import { EquipmentService } from '../../../_services/equipment.service';
 import { Action } from '../../../_types/action';
@@ -94,7 +95,7 @@ export class EquipmentStore {
                     hpWeight,
                     mpWeight,
                 }) => {
-                    return !!selectedUnit
+                    return selectedUnit
                         ? this.equipmentService
                               .getEquipment(
                                   selectedUnit,
@@ -171,7 +172,7 @@ export class EquipmentStore {
         const { ap, vp, hp, mp, carryWeight, ranged, element } = action.data;
         const unitUpdate: Partial<Unit> = { ap, vp, hp, mp, carryWeight, ranged, element };
         const customUnit = ALL_UNITS.get(CUSTOM_UNIT_NAME);
-        return !!customUnit
+        return customUnit
             ? this.state$.pipe(
                   take(1),
                   map((state) => ({

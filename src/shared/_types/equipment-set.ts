@@ -9,7 +9,7 @@ export interface EquipmentSet {
 }
 
 function allItems(set?: EquipmentSet): Array<Equipment> {
-    return !!set ? Object.values(set) : [];
+    return set ? Object.values(set) : [];
 }
 
 export function totalAP(set?: EquipmentSet, schmiedekunst = 0): number {

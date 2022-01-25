@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppComponent } from './app.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { AboutDialogComponent } from './_components/about-dialog/about-dialog.component';
-import { HelpDialogComponent } from './_components/help-dialog/help-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,15 +13,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import { ContextComponent } from './_components/context/context.component';
 import { EquipmentCalculatorComponent } from './_components/equipment-calculator/equipment-calculator.component';
-import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { BaseDataInputComponent } from './_components/equipment-calculator/_components/base-data-input/base-data-input.component';
 import { CustomUnitInputComponent } from './_components/equipment-calculator/_components/custom-unit-input/custom-unit-input.component';
 import { StatWeightingComponent } from './_components/equipment-calculator/_components/stat-weighting/stat-weighting.component';
 import { EquipmentSetComponent } from './_components/equipment-calculator/_components/equipment-set/equipment-set.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HelpDialogComponent } from './_components/help-dialog/help-dialog.component';
+import { AboutDialogComponent } from './_components/about-dialog/about-dialog.component';
+import { AppComponent } from './app.component';
 
 @NgModule({
     declarations: [

@@ -1,4 +1,5 @@
 import { Component, Self } from '@angular/core';
+
 import { EquipmentStore } from './_services/equipment.store';
 import { BaseDataFormData } from './_types/base-data-form-data';
 import { CustomUnitFormData } from './_types/custom-unit-form-data';

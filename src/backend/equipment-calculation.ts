@@ -1,3 +1,5 @@
+import { Request, Response } from 'express';
+
 import {
     combineElements,
     Element,
@@ -17,7 +19,6 @@ import {
 } from '../shared/_types/equipment';
 import { EquipmentSet, getWeightedTotalStats } from '../shared/_types/equipment-set';
 import { ElementMismatchError } from '../shared/_types/element-mismatch-error';
-import { Request, Response } from 'express';
 import { InvalidItemCombinationError } from '../shared/_types/invalid-item-combination-error';
 
 export function calculateEquipmentController(req: Request, res: Response): void {
@@ -220,16 +221,16 @@ function intParameter(request: Request, name: string): number {
 }
 
 function elementParameter(request: Request, name: string): Element {
-    const param: any = request.query[name];
-    return !!param ? Element[param as keyof typeof Element] : Element.NONE;
+    const param: unknown = request.query[name];
+    return param ? Element[param as keyof typeof Element] : Element.NONE;
 }
 
 function optionalElementParameter(request: Request, name: string): Element | undefined {
-    const param: any = request.query[name];
-    return !!param ? Element[param as keyof typeof Element] : undefined;
+    const param: unknown = request.query[name];
+    return param ? Element[param as keyof typeof Element] : undefined;
 }
 
 function booleanParameter(request: Request, name: string): boolean {
-    const param: any = request.query[name];
+    const param: unknown = request.query[name];
     return param === 'true';
 }

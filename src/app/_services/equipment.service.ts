@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Unit } from '../_types/unit';
 import { Observable, of } from 'rxjs';
-import { EquipmentSet } from '../../shared/_types/equipment-set';
 import { HttpClient } from '@angular/common/http';
+
+import { EquipmentSet } from '../../shared/_types/equipment-set';
+import { Unit } from '../_types/unit';
 import { Cache } from '../_types/cache';
-import { CacheService } from './cache.service';
 import { cached } from '../_util/operators';
 import { toHttpParams } from '../_util/http';
 import { environment } from '../../environments/environment';
 import { ALL_ACCESSORIES, ALL_ARMOUR, ALL_HELMETS, ALL_SHIELDS, ALL_WEAPONS } from '../../shared/_types/equipment';
 import { Element } from '../../shared/_types/element';
+
+import { CacheService } from './cache.service';
 
 function getRandomInt(max: number): number {
     return Math.floor(Math.random() * max);
