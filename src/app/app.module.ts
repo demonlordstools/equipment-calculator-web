@@ -20,7 +20,6 @@ import { ContextComponent } from './_components/context/context.component';
 import { EquipmentCalculatorComponent } from './_components/equipment-calculator/equipment-calculator.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BaseDataInputComponent } from './_components/equipment-calculator/_components/base-data-input/base-data-input.component';
-import { CustomUnitInputComponent } from './_components/equipment-calculator/_components/custom-unit-input/custom-unit-input.component';
 import { StatWeightingComponent } from './_components/equipment-calculator/_components/stat-weighting/stat-weighting.component';
 import { EquipmentSetComponent } from './_components/equipment-calculator/_components/equipment-set/equipment-set.component';
 import { HelpDialogComponent } from './_components/help-dialog/help-dialog.component';
@@ -35,7 +34,6 @@ import { AppComponent } from './app.component';
         ContextComponent,
         EquipmentCalculatorComponent,
         BaseDataInputComponent,
-        CustomUnitInputComponent,
         StatWeightingComponent,
         EquipmentSetComponent,
     ],

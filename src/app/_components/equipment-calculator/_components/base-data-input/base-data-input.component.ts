@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { elements } from 'src/shared/_types/element';
+import { Element, elements } from 'src/shared/_types/element';
 
-import { ALL_UNITS, Unit } from '../../../../_types/unit';
+import { ALL_UNITS, unitByName } from '../../../../_types/unit';
 import { NUMBERS_ONLY } from '../../../../_util/validators';
 import { BaseDataFormData } from '../../_types/base-data-form-data';
 import { CompositeSubscription } from '../../../../_types/composite-subscription';
@@ -12,24 +12,28 @@ import { CompositeSubscription } from '../../../../_types/composite-subscription
     templateUrl: './base-data-input.component.html',
     styleUrls: ['./base-data-input.component.scss'],
 })
-export class BaseDataInputComponent implements OnInit, OnDestroy, OnChanges {
-    @Input() selectedUnit?: Unit;
+export class BaseDataInputComponent implements OnInit, OnDestroy {
     @Output() changed = new EventEmitter<BaseDataFormData>();
 
     allUnits = [...ALL_UNITS.keys()];
     elements = elements;
     subscriptions = new CompositeSubscription();
 
-    rangedRequiredControl = new FormControl(false);
-    rangedForbiddenControl = new FormControl(false);
+    selectedUnitControl = new FormControl();
+    rangedControl = new FormControl(false);
+    rangedRequiredControl = new FormControl({ value: false, disabled: true });
+    rangedForbiddenControl = new FormControl({ value: false, disabled: true });
 
     form = new FormGroup({
+        // control names have to correspond with keys in BaseDataFormData
         waffenschmiede: new FormControl(0, [NUMBERS_ONLY]),
         schmiedekunst: new FormControl(0, [NUMBERS_ONLY]),
-        selectedUnit: new FormControl(),
+        selectedUnit: this.selectedUnitControl,
         elementAttack: new FormControl(),
         elementDefense: new FormControl(),
-        carryWeight: new FormControl(this.selectedUnit?.carryWeight),
+        unitElement: new FormControl(Element.NONE),
+        carryWeight: new FormControl(0),
+        ranged: this.rangedControl,
         rangedRequired: this.rangedRequiredControl,
         rangedForbidden: this.rangedForbiddenControl,
     });
@@ -40,30 +44,60 @@ export class BaseDataInputComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnInit(): void {
         this.subscriptions.add(
-            this.rangedRequiredControl.valueChanges.subscribe((rangedRequired) => {
-                const rangedForbidden = this.rangedForbiddenControl.value;
-                if (rangedRequired && rangedForbidden) {
-                    this.rangedForbiddenControl.setValue(false);
-                }
-            }),
-            this.rangedForbiddenControl.valueChanges.subscribe((rangedForbidden) => {
-                const rangedRequired = this.rangedRequiredControl.value;
-                if (rangedForbidden && rangedRequired) {
-                    this.rangedRequiredControl.setValue(false);
-                }
-            }),
+            this.selectedUnitControl.valueChanges.subscribe((unitName) => this.onUnitChanged(unitName)),
+            this.rangedControl.valueChanges.subscribe((ranged) => this.onRangedChanged(ranged)),
+            this.rangedRequiredControl.valueChanges.subscribe((rangedRequired) =>
+                this.onRangedRequiredChanged(rangedRequired)
+            ),
+            this.rangedForbiddenControl.valueChanges.subscribe((rangedForbidden) =>
+                this.onRangedForbiddenChanged(rangedForbidden)
+            ),
             this.form.valueChanges.subscribe((changes: BaseDataFormData) => {
                 this.changed.emit(changes);
             })
         );
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        const updatedUnit = changes['selectedUnit'].currentValue;
-        this.form?.patchValue({ carryWeight: updatedUnit?.carryWeight, rangedRequired: false, rangedForbidden: false });
-    }
-
     ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+    }
+
+    private onUnitChanged(unitName: string): void {
+        const updatedUnit = unitByName(unitName);
+        this.form?.patchValue({
+            carryWeight: updatedUnit?.carryWeight,
+            unitElement: updatedUnit?.element,
+            elementAttack: undefined,
+            elementDefense: undefined,
+            ranged: updatedUnit?.ranged,
+            rangedRequired: false,
+            rangedForbidden: false,
+        });
+    }
+
+    private onRangedChanged(ranged: boolean): void {
+        if (ranged) {
+            this.rangedRequiredControl.enable();
+            this.rangedForbiddenControl.enable();
+        } else {
+            this.rangedRequiredControl.setValue(false);
+            this.rangedForbiddenControl.setValue(false);
+            this.rangedRequiredControl.disable();
+            this.rangedForbiddenControl.disable();
+        }
+    }
+
+    private onRangedRequiredChanged(rangedRequired: boolean): void {
+        const rangedForbidden = this.rangedForbiddenControl.value;
+        if (rangedRequired && rangedForbidden) {
+            this.rangedForbiddenControl.setValue(false);
+        }
+    }
+
+    private onRangedForbiddenChanged(rangedForbidden: boolean): void {
+        const rangedRequired = this.rangedRequiredControl.value;
+        if (rangedForbidden && rangedRequired) {
+            this.rangedRequiredControl.setValue(false);
+        }
     }
 }

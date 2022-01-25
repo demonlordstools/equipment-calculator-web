@@ -23,7 +23,17 @@
     </div>
     <div>
         <mat-form-field appearance="outline" class="calc-input">
-            <mat-label>Element Angriff</mat-label>
+            <mat-label>Element der Einheit</mat-label>
+            <mat-select formControlName="unitElement">
+                <mat-option>egal</mat-option>
+                <mat-option
+                    *ngFor="let element of elements"
+                    [value]="element"
+                >{{ element }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="calc-input">
+            <mat-label>Zielelement Angriff</mat-label>
             <mat-select formControlName="elementAttack">
                 <mat-option>egal</mat-option>
                 <mat-option
@@ -33,7 +43,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="calc-input">
-            <mat-label>Element Verteidigung</mat-label>
+            <mat-label>Zielelement Verteidigung</mat-label>
             <mat-select formControlName="elementDefense">
                 <mat-option>egal</mat-option>
                 <mat-option
@@ -48,14 +58,19 @@
             <mat-label>Kraft</mat-label>
             <input formControlName="carryWeight" matInput min="0" type="number">
         </mat-form-field>
+    </div>
+    <div>
         <mat-checkbox
-            [disabled]="!selectedUnit?.ranged"
+            class="calc-input"
+            formControlName="ranged">
+            Kann FK-Waffe tragen
+        </mat-checkbox>
+        <mat-checkbox
             class="calc-input"
             formControlName="rangedRequired">
             muss FK-Waffe tragen
         </mat-checkbox>
         <mat-checkbox
-            [disabled]="!selectedUnit?.ranged"
             class="calc-input"
             formControlName="rangedForbidden">
             darf keine FK-Waffe tragen

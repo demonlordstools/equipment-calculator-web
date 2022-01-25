@@ -9,7 +9,6 @@ import {
     totalWeight,
 } from '../../../../../shared/_types/equipment-set';
 import { Element } from '../../../../../shared/_types/element';
-import { Unit } from '../../../../_types/unit';
 
 @Component({
     selector: 'app-equipment-set',
@@ -17,7 +16,7 @@ import { Unit } from '../../../../_types/unit';
     styleUrls: ['./equipment-set.component.scss'],
 })
 export class EquipmentSetComponent {
-    @Input() unit?: Unit;
+    @Input() unitElement = Element.NONE;
     @Input() set?: EquipmentSet;
     @Input() schmiedekunst = 0;
 
@@ -28,15 +27,15 @@ export class EquipmentSetComponent {
     totalWeight = totalWeight;
 
     getOffenseElementIcons(): Set<string> {
-        if (!this.unit || !this.set) return new Set<string>();
-        const unitElementIcons = this.getElementIcons(this.unit.element);
+        if (!this.set) return new Set<string>();
+        const unitElementIcons = this.getElementIcons(this.unitElement);
         const weaponElementIcons = this.getElementIcons(this.set.weapon.element);
         return new Set([...unitElementIcons, ...weaponElementIcons]);
     }
 
     getDefenseElementIcons(): Set<string> {
-        if (!this.unit || !this.set) return new Set<string>();
-        const unitElementIcons = this.getElementIcons(this.unit.element);
+        if (!this.set) return new Set<string>();
+        const unitElementIcons = this.getElementIcons(this.unitElement);
         const shieldElementIcons = this.getElementIcons(this.set.shield.element);
         const armourElementIcons = this.getElementIcons(this.set.armour.element);
         return new Set([...unitElementIcons, ...shieldElementIcons, ...armourElementIcons]);

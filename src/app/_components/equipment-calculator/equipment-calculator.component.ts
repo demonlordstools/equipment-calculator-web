@@ -2,7 +2,6 @@ import { Component, Self } from '@angular/core';
 
 import { EquipmentStore } from './_services/equipment.store';
 import { BaseDataFormData } from './_types/base-data-form-data';
-import { CustomUnitFormData } from './_types/custom-unit-form-data';
 import { StatWeightingFormData } from './_types/stat-weighting-form-data';
 
 @Component({
@@ -20,10 +19,6 @@ export class EquipmentCalculatorComponent {
 
     onBaseDataChanged(data: BaseDataFormData): void {
         this.store.updateBaseData(data);
-    }
-
-    onCustomUnitDataChanged(data: CustomUnitFormData): void {
-        this.store.updateCustomUnitData(data);
     }
 
     onStatWeightingDataChanged(data: StatWeightingFormData): void {

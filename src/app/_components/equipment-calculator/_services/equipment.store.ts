@@ -17,18 +17,13 @@ import { EquipmentState, errorState, IDLE_STATE, LOADING_STATE } from '../_types
 import { EquipmentService } from '../../../_services/equipment.service';
 import { Action } from '../../../_types/action';
 import { Error } from '../../../../shared/_types/error';
-import { ALL_UNITS, CUSTOM_UNIT_NAME, Unit, unitByName } from '../../../_types/unit';
+import { unitByName } from '../../../_types/unit';
 import { EquipmentSet } from '../../../../shared/_types/equipment-set';
-import {
-    CalculateEquipment,
-    UpdateBaseData,
-    UpdateCustomUnitData,
-    UpdateStatWeightingData,
-} from '../_types/equipment-calculator-action';
+import { CalculateEquipment, UpdateBaseData, UpdateStatWeightingData } from '../_types/equipment-calculator-action';
 import { BaseDataFormData } from '../_types/base-data-form-data';
-import { CustomUnitFormData } from '../_types/custom-unit-form-data';
 import { StatWeightingFormData } from '../_types/stat-weighting-form-data';
 import { InvalidUnitError } from '../../../../shared/_types/invalid-unit-error';
+import { Element } from '../../../../shared/_types/element';
 
 @Injectable()
 export class EquipmentStore {
@@ -59,10 +54,6 @@ export class EquipmentStore {
         this.dispatch(new UpdateBaseData(data));
     }
 
-    updateCustomUnitData(data: CustomUnitFormData): void {
-        this.dispatch(new UpdateCustomUnitData(data));
-    }
-
     updateStatWeighting(data: StatWeightingFormData): void {
         this.dispatch(new UpdateStatWeightingData(data));
     }
@@ -85,6 +76,9 @@ export class EquipmentStore {
             mergeMap(
                 ({
                     selectedUnit,
+                    carryWeight,
+                    element,
+                    ranged,
                     waffenschmiede,
                     elementAttack,
                     elementDefense,
@@ -99,6 +93,9 @@ export class EquipmentStore {
                         ? this.equipmentService
                               .getEquipment(
                                   selectedUnit,
+                                  carryWeight,
+                                  element,
+                                  ranged,
                                   waffenschmiede,
                                   rangedRequired,
                                   rangedForbidden,
@@ -134,57 +131,41 @@ export class EquipmentStore {
             elementAttack,
             elementDefense,
             carryWeight,
+            unitElement,
+            ranged,
             rangedRequired,
             rangedForbidden,
         } = action.data;
         return this.state$.pipe(
             take(1),
             map((state) => {
-                const unitChanged = state.selectedUnit?.name !== unitName;
+                const unitChanged = state.selectedUnit !== unitName;
                 const selectedUnit = unitByName(unitName);
                 const stateUpdate: Partial<EquipmentState> = {
                     ...state,
                     waffenschmiede,
                     schmiedekunst,
+                    selectedUnit: unitName,
+                    carryWeight,
+                    element: unitElement,
+                    ranged,
                     elementAttack,
                     elementDefense,
-                    customUnitSelected: unitName === CUSTOM_UNIT_NAME,
                     rangedRequired: rangedRequired && selectedUnit?.ranged,
                     rangedForbidden: rangedForbidden && selectedUnit?.ranged,
                     ...IDLE_STATE,
                 };
                 if (unitChanged) {
-                    stateUpdate.selectedUnit = selectedUnit;
-                } else {
-                    // Don't update the selected unit if it has not changed.
-                    // Otherwise, custom stats set previously would be lost.
-                    if (stateUpdate.selectedUnit) {
-                        stateUpdate.selectedUnit.carryWeight = carryWeight || selectedUnit?.carryWeight || 0;
-                    }
+                    // if the unit changed, set the new units default values
+                    const unit = unitByName(unitName);
+                    stateUpdate.carryWeight = unit?.carryWeight || 0;
+                    stateUpdate.element = unit?.element || Element.NONE;
+                    stateUpdate.ranged = unit?.ranged || false;
                 }
 
                 return stateUpdate;
             })
         );
-    }
-
-    private onUpdateCustomUnitData(action: UpdateCustomUnitData): Observable<Partial<EquipmentState>> {
-        const { ap, vp, hp, mp, carryWeight, ranged, element } = action.data;
-        const unitUpdate: Partial<Unit> = { ap, vp, hp, mp, carryWeight, ranged, element };
-        const customUnit = ALL_UNITS.get(CUSTOM_UNIT_NAME);
-        return customUnit
-            ? this.state$.pipe(
-                  take(1),
-                  map((state) => ({
-                      ...state,
-                      selectedUnit: {
-                          ...customUnit,
-                          ...unitUpdate,
-                      },
-                      ...IDLE_STATE,
-                  }))
-              )
-            : this.errorState(new InvalidUnitError('Error updating the custom unit.'));
     }
 
     private onStatWeightingData(action: UpdateStatWeightingData): Observable<Partial<EquipmentState>> {
@@ -205,7 +186,6 @@ export class EquipmentStore {
     private handleAction(action: Action): Observable<Partial<EquipmentState>> {
         if (action instanceof CalculateEquipment) return this.onCalculateEquipment();
         if (action instanceof UpdateBaseData) return this.onUpdateBaseData(action);
-        if (action instanceof UpdateCustomUnitData) return this.onUpdateCustomUnitData(action);
         if (action instanceof UpdateStatWeightingData) return this.onStatWeightingData(action);
 
         return of(IDLE_STATE);

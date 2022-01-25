@@ -3,7 +3,6 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { EquipmentSet } from '../../shared/_types/equipment-set';
-import { Unit } from '../_types/unit';
 import { Cache } from '../_types/cache';
 import { cached } from '../_util/operators';
 import { toHttpParams } from '../_util/http';
@@ -28,7 +27,10 @@ export class EquipmentService {
     }
 
     getEquipment(
-        unit: Unit,
+        unitName: string,
+        carryWeight: number,
+        element: Element,
+        ranged: boolean,
         waffenschmiede: number,
         rangedRequired: boolean,
         rangedForbidden: boolean,
@@ -50,9 +52,9 @@ export class EquipmentService {
             });
         }
         const cacheKey = this.getCacheKey(
-            unit.carryWeight,
-            unit.element,
-            unit.ranged,
+            carryWeight,
+            element,
+            ranged,
             waffenschmiede,
             rangedRequired,
             rangedForbidden,
@@ -64,9 +66,9 @@ export class EquipmentService {
             elementDefense
         );
         const params = toHttpParams({
-            unitCarryWeight: unit.carryWeight,
-            unitElement: unit.element,
-            unitRanged: unit.ranged,
+            unitCarryWeight: carryWeight,
+            unitElement: element,
+            unitRanged: ranged,
             waffenschmiede,
             rangedRequired,
             rangedForbidden,

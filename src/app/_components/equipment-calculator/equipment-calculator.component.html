@@ -1,15 +1,7 @@
 <ng-container *ngIf="(store.state$ | async) as state">
     <mat-card>
         <mat-card-content>
-            <app-base-data-input
-                (changed)="onBaseDataChanged($event)"
-                [selectedUnit]="state.selectedUnit"></app-base-data-input>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card *ngIf="state.customUnitSelected">
-        <mat-card-content>
-            <app-custom-unit-input (changed)="onCustomUnitDataChanged($event)"></app-custom-unit-input>
+            <app-base-data-input (changed)="onBaseDataChanged($event)"></app-base-data-input>
         </mat-card-content>
     </mat-card>
 
@@ -32,7 +24,7 @@
             <app-equipment-set
                 [schmiedekunst]="state.schmiedekunst"
                 [set]="set"
-                [unit]="state.selectedUnit"></app-equipment-set>
+                [unitElement]="state.element"></app-equipment-set>
         </mat-card-content>
     </mat-card>
 </ng-container>

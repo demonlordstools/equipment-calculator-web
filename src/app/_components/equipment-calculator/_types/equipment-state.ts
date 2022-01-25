@@ -1,18 +1,18 @@
 import { EquipmentSet } from '../../../../shared/_types/equipment-set';
-import { Unit } from '../../../_types/unit';
 import { Element } from '../../../../shared/_types/element';
 import { Error } from '../../../../shared/_types/error';
 
 export class EquipmentState {
     waffenschmiede = 0;
     schmiedekunst = 0;
-    selectedUnit?: Unit;
+    selectedUnit?: string;
+    carryWeight = 0;
+    element = Element.NONE;
+    ranged = false;
     elementAttack?: Element;
     elementDefense?: Element;
     rangedRequired = false;
     rangedForbidden = false;
-
-    customUnitSelected = false;
 
     apWeight = 0;
     vpWeight = 0;
