@@ -237,6 +237,8 @@ export class EquipmentStore {
                     carryWeight: unit?.carryWeight || 0,
                     element: unit?.element || Element.NONE,
                     ranged: unit?.ranged,
+                    rangedRequired: false,
+                    rangedForbidden: false,
                 };
             })
         );
