@@ -3,6 +3,7 @@ import {
     asyncScheduler,
     BehaviorSubject,
     catchError,
+    concatMap,
     map,
     mergeMap,
     Observable,
@@ -11,6 +12,7 @@ import {
     startWith,
     Subject,
     take,
+    tap,
 } from 'rxjs';
 
 import { EquipmentState, errorState, IDLE_STATE, LOADING_STATE } from '../_types/equipment-state';
@@ -19,11 +21,24 @@ import { Action } from '../../../_types/action';
 import { Error } from '../../../../shared/_types/error';
 import { unitByName } from '../../../_types/unit';
 import { EquipmentSet } from '../../../../shared/_types/equipment-set';
-import { CalculateEquipment, UpdateBaseData, UpdateStatWeightingData } from '../_types/equipment-calculator-action';
-import { BaseDataFormData } from '../_types/base-data-form-data';
+import {
+    CalculateEquipment,
+    UpdateAttackElement,
+    UpdateCarryWeight,
+    UpdateDefenseElement,
+    UpdateRanged,
+    UpdateRangedForbidden,
+    UpdateRangedRequired,
+    UpdateSchmiedekunst,
+    UpdateSelectedUnit,
+    UpdateStatWeightingData,
+    UpdateUnitElement,
+    UpdateWaffenschmiede,
+} from '../_types/equipment-calculator-action';
 import { StatWeightingFormData } from '../_types/stat-weighting-form-data';
 import { InvalidUnitError } from '../../../../shared/_types/invalid-unit-error';
 import { Element } from '../../../../shared/_types/element';
+import { StorageService } from '../../../_services/storage.service';
 
 @Injectable()
 export class EquipmentStore {
@@ -31,15 +46,19 @@ export class EquipmentStore {
     private _state$: BehaviorSubject<EquipmentState>;
     private _actions$: Subject<Action> = new Subject<Action>();
 
-    constructor(public equipmentService: EquipmentService) {
+    constructor(private equipmentService: EquipmentService, private storageService: StorageService) {
         this._state$ = new BehaviorSubject<EquipmentState>(new EquipmentState());
         this.state$ = this._state$.asObservable().pipe(observeOn(asyncScheduler));
         this._actions$
             .pipe(
                 observeOn(asyncScheduler),
-                mergeMap((action) => this.handleAction(action))
+                concatMap((action) => this.handleAction(action))
             )
             .subscribe((stateUpdate) => this.updateState(stateUpdate));
+
+        const savedWaffenschmiede = storageService.getWaffenschmiede();
+        const savedSchmiedekunst = storageService.getSchmiedekunst();
+        this.dispatch(new UpdateWaffenschmiede(savedWaffenschmiede), new UpdateSchmiedekunst(savedSchmiedekunst));
     }
 
     get state(): EquipmentState {
@@ -50,12 +69,48 @@ export class EquipmentStore {
         this.dispatch(new CalculateEquipment());
     }
 
-    updateBaseData(data: BaseDataFormData): void {
-        this.dispatch(new UpdateBaseData(data));
-    }
-
     updateStatWeighting(data: StatWeightingFormData): void {
         this.dispatch(new UpdateStatWeightingData(data));
+    }
+
+    updateCarryWeight(carryWeight: number): void {
+        this.dispatch(new UpdateCarryWeight(carryWeight));
+    }
+
+    updateAttackElement(element: Element | undefined): void {
+        this.dispatch(new UpdateAttackElement(element));
+    }
+
+    updateDefenseElement(element: Element | undefined): void {
+        this.dispatch(new UpdateDefenseElement(element));
+    }
+
+    updateRanged(ranged: boolean): void {
+        this.dispatch(new UpdateRanged(ranged));
+    }
+
+    updateRangedForbidden(rangedForbidden: boolean): void {
+        this.dispatch(new UpdateRangedForbidden(rangedForbidden));
+    }
+
+    updateRangedRequired(rangedRequired: boolean): void {
+        this.dispatch(new UpdateRangedRequired(rangedRequired));
+    }
+
+    updateSchmiedekunst(schmiedekunst: number): void {
+        this.dispatch(new UpdateSchmiedekunst(schmiedekunst));
+    }
+
+    updateSelectedUnit(unitName: string | undefined): void {
+        this.dispatch(new UpdateSelectedUnit(unitName));
+    }
+
+    updateUnitElement(element: Element): void {
+        this.dispatch(new UpdateUnitElement(element));
+    }
+
+    updateWaffenschmiede(waffenschmiede: number): void {
+        this.dispatch(new UpdateWaffenschmiede(waffenschmiede));
     }
 
     private dispatch(...actions: Array<Action>): void {
@@ -73,102 +128,69 @@ export class EquipmentStore {
     private onCalculateEquipment(): Observable<Partial<EquipmentState>> {
         return this.state$.pipe(
             take(1),
-            mergeMap(
-                ({
-                    selectedUnit,
-                    carryWeight,
-                    element,
-                    ranged,
-                    waffenschmiede,
-                    elementAttack,
-                    elementDefense,
-                    rangedRequired,
-                    rangedForbidden,
-                    apWeight,
-                    vpWeight,
-                    hpWeight,
-                    mpWeight,
-                }) => {
-                    return selectedUnit
-                        ? this.equipmentService
-                              .getEquipment(
-                                  selectedUnit,
-                                  carryWeight,
-                                  element,
-                                  ranged,
-                                  waffenschmiede,
-                                  rangedRequired,
-                                  rangedForbidden,
-                                  apWeight,
-                                  vpWeight,
-                                  hpWeight,
-                                  mpWeight,
-                                  elementAttack,
-                                  elementDefense
-                              )
-                              .pipe(
-                                  take(1),
-                                  map((set: EquipmentSet) => ({
-                                      set,
-                                      ...IDLE_STATE,
-                                  })),
-                                  startWith(LOADING_STATE),
-                                  catchError(({ error }: { error: Error }) => {
-                                      return of(errorState(error));
-                                  })
-                              )
-                        : this.errorState(new InvalidUnitError('No unit selected.'));
-                }
-            )
-        );
-    }
-
-    private onUpdateBaseData(action: UpdateBaseData): Observable<Partial<EquipmentState>> {
-        const {
-            waffenschmiede,
-            schmiedekunst,
-            selectedUnit: unitName,
-            elementAttack,
-            elementDefense,
-            carryWeight,
-            unitElement,
-            ranged,
-            rangedRequired,
-            rangedForbidden,
-        } = action.data;
-        return this.state$.pipe(
-            take(1),
-            map((state) => {
-                const unitChanged = state.selectedUnit !== unitName;
-                const selectedUnit = unitByName(unitName);
-                const stateUpdate: Partial<EquipmentState> = {
-                    ...state,
-                    waffenschmiede,
-                    schmiedekunst,
-                    selectedUnit: unitName,
-                    carryWeight,
-                    element: unitElement,
-                    ranged,
-                    elementAttack,
-                    elementDefense,
-                    rangedRequired: rangedRequired && selectedUnit?.ranged,
-                    rangedForbidden: rangedForbidden && selectedUnit?.ranged,
-                    ...IDLE_STATE,
-                };
-                if (unitChanged) {
-                    // if the unit changed, set the new units default values
-                    const unit = unitByName(unitName);
-                    stateUpdate.carryWeight = unit?.carryWeight || 0;
-                    stateUpdate.element = unit?.element || Element.NONE;
-                    stateUpdate.ranged = unit?.ranged || false;
-                }
-
-                return stateUpdate;
+            mergeMap((state) => {
+                return state.selectedUnit
+                    ? this.equipmentService
+                          .getEquipment(
+                              state.selectedUnit,
+                              state.carryWeight,
+                              state.element,
+                              state.ranged,
+                              state.waffenschmiede,
+                              state.rangedRequired,
+                              state.rangedForbidden,
+                              state.apWeight,
+                              state.vpWeight,
+                              state.hpWeight,
+                              state.mpWeight,
+                              state.elementAttack,
+                              state.elementDefense
+                          )
+                          .pipe(
+                              take(1),
+                              map((set: EquipmentSet) => ({
+                                  set,
+                                  ...IDLE_STATE,
+                              })),
+                              startWith(LOADING_STATE),
+                              catchError(({ error }: { error: Error }) => {
+                                  return of(errorState(error));
+                              })
+                          )
+                    : this.errorState(new InvalidUnitError('No unit selected.'));
             })
         );
     }
 
-    private onStatWeightingData(action: UpdateStatWeightingData): Observable<Partial<EquipmentState>> {
+    private onUpdateWaffenschmiede(action: UpdateWaffenschmiede): Observable<Partial<EquipmentState>> {
+        const { waffenschmiede } = action;
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                waffenschmiede,
+            })),
+            tap(() => {
+                this.storageService.saveWaffenschmiede(waffenschmiede);
+            })
+        );
+    }
+
+    private onUpdateSchmiedekunst(action: UpdateSchmiedekunst): Observable<Partial<EquipmentState>> {
+        const { schmiedekunst } = action;
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                schmiedekunst,
+            })),
+            tap(() => {
+                this.storageService.saveSchmiedekunst(schmiedekunst);
+            })
+        );
+    }
+
+    private onUpdateStatWeightingData(action: UpdateStatWeightingData): Observable<Partial<EquipmentState>> {
         const { apWeight, vpWeight, hpWeight, mpWeight } = action.data;
         return this.state$.pipe(
             take(1),
@@ -185,13 +207,112 @@ export class EquipmentStore {
 
     private handleAction(action: Action): Observable<Partial<EquipmentState>> {
         if (action instanceof CalculateEquipment) return this.onCalculateEquipment();
-        if (action instanceof UpdateBaseData) return this.onUpdateBaseData(action);
-        if (action instanceof UpdateStatWeightingData) return this.onStatWeightingData(action);
+        if (action instanceof UpdateStatWeightingData) return this.onUpdateStatWeightingData(action);
+        if (action instanceof UpdateWaffenschmiede) return this.onUpdateWaffenschmiede(action);
+        if (action instanceof UpdateSchmiedekunst) return this.onUpdateSchmiedekunst(action);
+        if (action instanceof UpdateSelectedUnit) return this.onUpdateSelectedUnit(action);
+        if (action instanceof UpdateCarryWeight) return this.onUpdateCarryWeight(action);
+        if (action instanceof UpdateUnitElement) return this.onUpdateUnitElement(action);
+        if (action instanceof UpdateRanged) return this.onUpdateRanged(action);
+        if (action instanceof UpdateAttackElement) return this.onUpdateAttackElement(action);
+        if (action instanceof UpdateDefenseElement) return this.onUpdateDefenseElement(action);
+        if (action instanceof UpdateRangedRequired) return this.onUpdatedRangedRequired(action);
+        if (action instanceof UpdateRangedForbidden) return this.onUpdateRangedForbidden(action);
 
         return of(IDLE_STATE);
     }
 
     private errorState(error: Error): Observable<Partial<EquipmentState>> {
         return this.state$.pipe(map((state) => ({ ...state, ...errorState(error) })));
+    }
+
+    private onUpdateSelectedUnit(action: UpdateSelectedUnit): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => {
+                const unit = unitByName(action.selectedUnit);
+                return {
+                    ...state,
+                    selectedUnit: action.selectedUnit,
+                    carryWeight: unit?.carryWeight || 0,
+                    element: unit?.element || Element.NONE,
+                    ranged: unit?.ranged,
+                };
+            })
+        );
+    }
+
+    private onUpdateCarryWeight(action: UpdateCarryWeight): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                carryWeight: action.carryWeight,
+            }))
+        );
+    }
+
+    private onUpdateUnitElement(action: UpdateUnitElement): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                element: action.element,
+            }))
+        );
+    }
+
+    private onUpdateRanged(action: UpdateRanged): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                ranged: action.ranged,
+                rangedRequired: false,
+                rangedForbidden: false,
+            }))
+        );
+    }
+
+    private onUpdateAttackElement(action: UpdateAttackElement): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                elementAttack: action.element,
+            }))
+        );
+    }
+
+    private onUpdateDefenseElement(action: UpdateDefenseElement): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                elementDefense: action.element,
+            }))
+        );
+    }
+
+    private onUpdatedRangedRequired(action: UpdateRangedRequired): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                rangedRequired: action.rangedRequired,
+                rangedForbidden: false,
+            }))
+        );
+    }
+
+    private onUpdateRangedForbidden(action: UpdateRangedForbidden): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                rangedForbidden: action.rangedForbidden,
+                rangedRequired: false,
+            }))
+        );
     }
 }

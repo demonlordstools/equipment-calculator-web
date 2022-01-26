@@ -1,103 +1,90 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Element, elements } from 'src/shared/_types/element';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
-import { ALL_UNITS, unitByName } from '../../../../_types/unit';
-import { NUMBERS_ONLY } from '../../../../_util/validators';
-import { BaseDataFormData } from '../../_types/base-data-form-data';
-import { CompositeSubscription } from '../../../../_types/composite-subscription';
+import { ALL_UNITS } from '../../../../_types/unit';
+import { InvalidInputError } from '../../../../../shared/_types/invalid-input-error';
 
 @Component({
     selector: 'app-base-data-input',
     templateUrl: './base-data-input.component.html',
     styleUrls: ['./base-data-input.component.scss'],
 })
-export class BaseDataInputComponent implements OnInit, OnDestroy {
-    @Output() changed = new EventEmitter<BaseDataFormData>();
+export class BaseDataInputComponent {
+    @Input() waffenschmiede = 0;
+    @Input() schmiedekunst = 0;
+    @Input() selectedUnit?: string;
+    @Input() unitElement = Element.NONE;
+    @Input() carryWeight = 0;
+    @Input() ranged = false;
+    @Input() elementAttack?: Element;
+    @Input() elementDefense?: Element;
+    @Input() rangedRequired = false;
+    @Input() rangedForbidden = false;
+    @Output() waffenschmiedeChanged = new EventEmitter<number>();
+    @Output() schmiedekunstChanged = new EventEmitter<number>();
+    @Output() selectedUnitChanged = new EventEmitter<string | undefined>();
+    @Output() unitElementChanged = new EventEmitter<Element>();
+    @Output() carryWeightChanged = new EventEmitter<number>();
+    @Output() rangedChanged = new EventEmitter<boolean>();
+    @Output() elementAttackChanged = new EventEmitter<Element | undefined>();
+    @Output() elementDefenseChanged = new EventEmitter<Element | undefined>();
+    @Output() rangedRequiredChanged = new EventEmitter<boolean>();
+    @Output() rangedForbiddenChanged = new EventEmitter<boolean>();
 
     allUnits = [...ALL_UNITS.keys()];
     elements = elements;
-    subscriptions = new CompositeSubscription();
-
-    selectedUnitControl = new FormControl();
-    rangedControl = new FormControl(false);
-    rangedRequiredControl = new FormControl({ value: false, disabled: true });
-    rangedForbiddenControl = new FormControl({ value: false, disabled: true });
-
-    form = new FormGroup({
-        // control names have to correspond with keys in BaseDataFormData
-        waffenschmiede: new FormControl(0, [NUMBERS_ONLY]),
-        schmiedekunst: new FormControl(0, [NUMBERS_ONLY]),
-        selectedUnit: this.selectedUnitControl,
-        elementAttack: new FormControl(),
-        elementDefense: new FormControl(),
-        unitElement: new FormControl(Element.NONE),
-        carryWeight: new FormControl(0),
-        ranged: this.rangedControl,
-        rangedRequired: this.rangedRequiredControl,
-        rangedForbidden: this.rangedForbiddenControl,
-    });
 
     unitName(index: number, name: string): string {
         return name;
     }
 
-    ngOnInit(): void {
-        this.subscriptions.add(
-            this.selectedUnitControl.valueChanges.subscribe((unitName) => this.onUnitChanged(unitName)),
-            this.rangedControl.valueChanges.subscribe((ranged) => this.onRangedChanged(ranged)),
-            this.rangedRequiredControl.valueChanges.subscribe((rangedRequired) =>
-                this.onRangedRequiredChanged(rangedRequired)
-            ),
-            this.rangedForbiddenControl.valueChanges.subscribe((rangedForbidden) =>
-                this.onRangedForbiddenChanged(rangedForbidden)
-            ),
-            this.form.valueChanges.subscribe((changes: BaseDataFormData) => {
-                this.changed.emit(changes);
-            })
-        );
+    onWaffenschmiedeChanged(value: string): void {
+        const intValue = Number.parseInt(value);
+        isNaN(intValue)
+            ? this.waffenschmiedeChanged.error(new InvalidInputError(`${value} is not a number.`))
+            : this.waffenschmiedeChanged.emit(intValue);
     }
 
-    ngOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+    onSchmiedekunstChanged(value: string): void {
+        const intValue = Number.parseInt(value);
+        isNaN(intValue)
+            ? this.schmiedekunstChanged.error(new InvalidInputError(`${value} is not a number.`))
+            : this.schmiedekunstChanged.emit(intValue);
     }
 
-    private onUnitChanged(unitName: string): void {
-        const updatedUnit = unitByName(unitName);
-        this.form?.patchValue({
-            carryWeight: updatedUnit?.carryWeight,
-            unitElement: updatedUnit?.element,
-            elementAttack: undefined,
-            elementDefense: undefined,
-            ranged: updatedUnit?.ranged,
-            rangedRequired: false,
-            rangedForbidden: false,
-        });
+    onSelectedUnitChanged(unitName: string | undefined): void {
+        this.selectedUnitChanged.emit(unitName);
     }
 
-    private onRangedChanged(ranged: boolean): void {
-        if (ranged) {
-            this.rangedRequiredControl.enable();
-            this.rangedForbiddenControl.enable();
-        } else {
-            this.rangedRequiredControl.setValue(false);
-            this.rangedForbiddenControl.setValue(false);
-            this.rangedRequiredControl.disable();
-            this.rangedForbiddenControl.disable();
-        }
+    onUnitElementChanged(element: Element): void {
+        this.unitElementChanged.emit(element);
     }
 
-    private onRangedRequiredChanged(rangedRequired: boolean): void {
-        const rangedForbidden = this.rangedForbiddenControl.value;
-        if (rangedRequired && rangedForbidden) {
-            this.rangedForbiddenControl.setValue(false);
-        }
+    onAttackElementChanged(element: Element | undefined): void {
+        this.elementAttackChanged.emit(element);
     }
 
-    private onRangedForbiddenChanged(rangedForbidden: boolean): void {
-        const rangedRequired = this.rangedRequiredControl.value;
-        if (rangedForbidden && rangedRequired) {
-            this.rangedRequiredControl.setValue(false);
-        }
+    onDefenseElementChanged(element: Element | undefined): void {
+        this.elementDefenseChanged.emit(element);
+    }
+
+    onCarryWeightChanged(value: string): void {
+        const intValue = Number.parseInt(value);
+        isNaN(intValue)
+            ? this.carryWeightChanged.error(new InvalidInputError(`${value} is not a number.`))
+            : this.carryWeightChanged.emit(intValue);
+    }
+
+    onRangedChanged(change: MatCheckboxChange): void {
+        this.rangedChanged.emit(change.checked);
+    }
+
+    onRangedRequiredChanged(change: MatCheckboxChange): void {
+        this.rangedRequiredChanged.emit(change.checked);
+    }
+
+    onRangedForbiddenChanged(change: MatCheckboxChange): void {
+        this.rangedForbiddenChanged.emit(change.checked);
     }
 }

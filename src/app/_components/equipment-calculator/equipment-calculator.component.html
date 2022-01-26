@@ -1,7 +1,28 @@
 <ng-container *ngIf="(store.state$ | async) as state">
     <mat-card>
         <mat-card-content>
-            <app-base-data-input (changed)="onBaseDataChanged($event)"></app-base-data-input>
+            <app-base-data-input
+                (carryWeightChanged)="onCarryWeightChanged($event)"
+                (elementAttackChanged)="onElementAttackChanged($event)"
+                (elementDefenseChanged)="onElementDefenseChanged($event)"
+                (rangedChanged)="onRangedChanged($event)"
+                (rangedForbiddenChanged)="onRangedForbiddenChanged($event)"
+                (rangedRequiredChanged)="onRangedRequiredChanged($event)"
+                (schmiedekunstChanged)="onSchmiedekunstChanged($event)"
+                (selectedUnitChanged)="onSelectedUnitChanged($event)"
+                (unitElementChanged)="onUnitElementChanged($event)"
+                (waffenschmiedeChanged)="onWaffenschmiedeChanged($event)"
+                [carryWeight]="state.carryWeight"
+                [elementAttack]="state.elementAttack"
+                [elementDefense]="state.elementDefense"
+                [rangedForbidden]="state.rangedForbidden"
+                [rangedRequired]="state.rangedRequired"
+                [ranged]="state.ranged"
+                [schmiedekunst]="state.schmiedekunst"
+                [selectedUnit]="state.selectedUnit"
+                [unitElement]="state.element"
+                [waffenschmiede]="state.waffenschmiede"
+            ></app-base-data-input>
         </mat-card-content>
     </mat-card>
 
@@ -24,7 +45,8 @@
             <app-equipment-set
                 [schmiedekunst]="state.schmiedekunst"
                 [set]="set"
-                [unitElement]="state.element"></app-equipment-set>
+                [unitElement]="state.element"
+            ></app-equipment-set>
         </mat-card-content>
     </mat-card>
 </ng-container>
