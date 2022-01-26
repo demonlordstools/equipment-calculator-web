@@ -88,7 +88,6 @@ export function getWantedDefenseElements(unitElement: Element, targetElement?: E
  * checks if a desired attack element is achievable for a unit's element.
  */
 export function attackElementAchievable(unitElement: Element, targetElement?: Element): boolean {
-    console.warn('>>> attackElementAchievable - checking elements:', unitElement, targetElement);
     if (!targetElement) return true;
     if (!isValidElementCombination(unitElement, targetElement)) return false;
     if (unitElement === Element.NONE) {

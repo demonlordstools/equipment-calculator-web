@@ -13,5 +13,5 @@ app.use('/', express.static('dist/dl-equipment-calculator-web/'));
 app.get('/equipment', calculateEquipmentController);
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Backend listening at http://localhost:${port}`);
 });

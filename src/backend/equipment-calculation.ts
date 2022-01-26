@@ -150,10 +150,7 @@ function getBestItemCombination(
     targetDefenseElement?: Element
 ): Promise<EquipmentSet> {
     return new Promise((resolve) => {
-        let totalIterations = 0;
-        let validItemCombinations = 0;
         let result: EquipmentSet | undefined = undefined;
-        const start = new Date();
         const maxWeight = carryWeight + MAX_WEIGHT_BONUS;
 
         for (const weapon of validWeapons) {
@@ -170,9 +167,7 @@ function getBestItemCombination(
                     for (const helmet of validHelmets) {
                         if (!validWeightAndElements(maxWeight, weapon, armour, shield, helmet)) continue;
                         for (const accessory of validAccessories) {
-                            totalIterations++;
                             if (validWeightAndElements(carryWeight, weapon, armour, shield, helmet, accessory)) {
-                                validItemCombinations++;
                                 const newSet: EquipmentSet = { weapon, armour, shield, helmet, accessory };
                                 result =
                                     getWeightedTotalStats(newSet, apWeight, vpWeight, hpWeight, mpWeight) >
@@ -186,10 +181,6 @@ function getBestItemCombination(
             }
         }
 
-        const end = new Date();
-        console.debug(`>>> took ${(end.getTime() - start.getTime()) / 1000}s.`);
-        console.debug('>>> total iterations:', totalIterations);
-        console.debug('>>> valid combinations:', validItemCombinations);
         if (!result) throw 'Unable to find item combination';
         resolve(result);
     });
