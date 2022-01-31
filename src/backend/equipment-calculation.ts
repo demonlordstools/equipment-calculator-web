@@ -89,6 +89,7 @@ function calculateEquipment(
         const maxWeight = unitCarryWeight + MAX_WEIGHT_BONUS;
 
         const validWeapons = filterInvalidItems(
+            unitElement,
             maxWeight,
             unitRanged,
             waffenschmiede,
@@ -97,8 +98,9 @@ function calculateEquipment(
             rangedRequired,
             rangedForbidden
         );
-        const validHelmets = filterInvalidItems(maxWeight, unitRanged, waffenschmiede, ALL_HELMETS);
+        const validHelmets = filterInvalidItems(unitElement, maxWeight, unitRanged, waffenschmiede, ALL_HELMETS);
         const validArmour = filterInvalidItems(
+            unitElement,
             maxWeight,
             unitRanged,
             waffenschmiede,
@@ -106,13 +108,20 @@ function calculateEquipment(
             wantedDefenseElements
         );
         const validShields = filterInvalidItems(
+            unitElement,
             maxWeight,
             unitRanged,
             waffenschmiede,
             ALL_SHIELDS,
             wantedDefenseElements
         );
-        const validAccessories = filterInvalidItems(maxWeight, unitRanged, waffenschmiede, ALL_ACCESSORIES);
+        const validAccessories = filterInvalidItems(
+            unitElement,
+            maxWeight,
+            unitRanged,
+            waffenschmiede,
+            ALL_ACCESSORIES
+        );
 
         getBestItemCombination(
             unitElement,
@@ -156,18 +165,20 @@ function getBestItemCombination(
         for (const weapon of validWeapons) {
             if (targetAttackElement && combineElements(element, weapon.element) !== targetAttackElement) continue;
             for (const armour of validArmour) {
-                if (!validWeightAndElements(maxWeight, weapon, armour)) continue;
+                if (!validWeightAndElements(element, maxWeight, weapon, armour)) continue;
                 for (const shield of validShields) {
-                    if (!validWeightAndElements(maxWeight, weapon, armour, shield)) continue;
+                    if (!validWeightAndElements(element, maxWeight, weapon, armour, shield)) continue;
                     if (
                         targetDefenseElement &&
                         combineElements(element, armour.element, shield.element) !== targetDefenseElement
                     )
                         continue;
                     for (const helmet of validHelmets) {
-                        if (!validWeightAndElements(maxWeight, weapon, armour, shield, helmet)) continue;
+                        if (!validWeightAndElements(element, maxWeight, weapon, armour, shield, helmet)) continue;
                         for (const accessory of validAccessories) {
-                            if (validWeightAndElements(carryWeight, weapon, armour, shield, helmet, accessory)) {
+                            if (
+                                validWeightAndElements(element, carryWeight, weapon, armour, shield, helmet, accessory)
+                            ) {
                                 const newSet: EquipmentSet = { weapon, armour, shield, helmet, accessory };
                                 result =
                                     getWeightedTotalStats(newSet, apWeight, vpWeight, hpWeight, mpWeight) >
@@ -187,6 +198,7 @@ function getBestItemCombination(
 }
 
 function filterInvalidItems(
+    unitElement: Element,
     maxWeight: number,
     unitRanged: boolean,
     waffenschmiede: number,
@@ -197,6 +209,7 @@ function filterInvalidItems(
 ): Array<Equipment> {
     return equipment.filter(
         ({ element, ranged, requiredWaffenschmiede, weight }) =>
+            isValidElementCombination(unitElement, element) &&
             waffenschmiede >= requiredWaffenschmiede &&
             maxWeight >= weight &&
             !(rangedRequired && !ranged) &&

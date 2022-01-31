@@ -36,10 +36,14 @@ export function mp(equipment: Equipment, schmiedekunst: number): number {
     return totalValue(equipment.mp, schmiedekunst);
 }
 
-export function validWeightAndElements(maxWeight: number, ...equipment: Array<Equipment>): boolean {
-    const elements = equipment.map((eq) => eq.element);
+export function validWeightAndElements(
+    unitElement: Element,
+    maxWeight: number,
+    ...equipment: Array<Equipment>
+): boolean {
+    const equipmentElements = equipment.map((eq) => eq.element);
     const totalWeight = equipment.reduce((acc, curr) => acc + curr.weight, 0);
-    return isValidElementCombination(...elements) && totalWeight <= maxWeight;
+    return isValidElementCombination(unitElement, ...equipmentElements) && totalWeight <= maxWeight;
 }
 
 export const MAX_WEIGHT_BONUS = 57;
