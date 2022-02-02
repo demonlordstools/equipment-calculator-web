@@ -217,7 +217,7 @@ export const ALL_WEAPONS: Array<Equipment> = [
     equipment(100, 30, 5, 0, 40, false, Element.ICE, 7, 'Eissäbel'),
     equipment(200, 50, 0, 0, 50, false, Element.FIRE, 8, 'Blutbeflecktes Schwert des Zorns'),
     equipment(400, 120, 120, 0, 155, false, Element.NONE, 8, 'Götterzucht'),
-    equipment(400, 0, 0, 50, 65, false, Element.ICE, 8, 'Hammer des Gletscherkönigs'),
+    equipment(400, 0, 0, 50, 65, false, Element.ICE, 9, 'Hammer des Gletscherkönigs'),
     equipment(410, -10, -10, 0, 235, false, Element.FIRE, 9, 'Höllenschwert'),
     equipment(510, 60, 15, 0, 400, false, Element.ICE, 9, 'Dimensionenklingen'),
     equipment(100, 0, 0, 0, 40, true, Element.FIRE, 9, 'Karmesinroter Bogen'),
