@@ -163,7 +163,8 @@ export class EquipmentStore {
                                   ...IDLE_STATE,
                               })),
                               startWith(LOADING_STATE),
-                              catchError(({ error }: { error: Error }) => {
+                              catchError((error: Error) => {
+                                  console.error('Error calculating equipment set:', error);
                                   return of(errorState(error));
                               })
                           )

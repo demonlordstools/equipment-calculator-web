@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 import { EquipmentSet } from '../../shared/_types/equipment-set';
 import { Cache } from '../_types/cache';
 import { cached } from '../_util/operators';
-import { toHttpParams } from '../_util/http';
 import { environment } from '../../environments/environment';
 import { ALL_ACCESSORIES, ALL_ARMOUR, ALL_HELMETS, ALL_SHIELDS, ALL_WEAPONS } from '../../shared/_types/equipment';
 import { Element } from '../../shared/_types/element';
 
 import { CacheService } from './cache.service';
+import { WebSocketService } from './web-socket.service';
 
 function getRandomInt(max: number): number {
     return Math.floor(Math.random() * max);
@@ -22,8 +21,12 @@ function getRandomInt(max: number): number {
 export class EquipmentService {
     private equipmentCache: Cache<EquipmentSet>;
 
-    constructor(private http: HttpClient, cacheService: CacheService) {
+    constructor(private websocketService: WebSocketService, cacheService: CacheService) {
         this.equipmentCache = cacheService.get<EquipmentSet>('equipmentCache');
+    }
+
+    private static getCacheKey(...objects: Array<unknown>): string {
+        return objects.join(':');
     }
 
     getEquipment(
@@ -51,7 +54,7 @@ export class EquipmentService {
                 accessory: ALL_ACCESSORIES[getRandomInt(ALL_ACCESSORIES.length - 1)],
             });
         }
-        const cacheKey = this.getCacheKey(
+        const cacheKey = EquipmentService.getCacheKey(
             carryWeight,
             element,
             ranged,
@@ -65,24 +68,22 @@ export class EquipmentService {
             elementAttack,
             elementDefense
         );
-        const params = toHttpParams({
-            unitCarryWeight: carryWeight,
-            unitElement: element,
-            unitRanged: ranged,
-            waffenschmiede,
-            rangedRequired,
-            rangedForbidden,
-            elementAttack,
-            elementDefense,
-            apWeight,
-            vpWeight,
-            hpWeight,
-            mpWeight,
-        });
-        return this.http.get<EquipmentSet>('/equipment', { params }).pipe(cached(this.equipmentCache, cacheKey));
-    }
 
-    private getCacheKey(...objects: Array<unknown>): string {
-        return objects.join(':');
+        return this.websocketService
+            .sendMessage<EquipmentSet>({
+                unitCarryWeight: carryWeight,
+                unitElement: element,
+                unitRanged: ranged,
+                waffenschmiede,
+                rangedRequired,
+                rangedForbidden,
+                elementAttack,
+                elementDefense,
+                apWeight,
+                vpWeight,
+                hpWeight,
+                mpWeight,
+            })
+            .pipe(cached(this.equipmentCache, cacheKey));
     }
 }

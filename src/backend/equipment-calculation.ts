@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { RawData } from 'ws';
 
 import {
     combineElements,
@@ -21,24 +21,26 @@ import { EquipmentSet, getWeightedTotalStats } from '../shared/_types/equipment-
 import { ElementMismatchError } from '../shared/_types/element-mismatch-error';
 import { InvalidItemCombinationError } from '../shared/_types/invalid-item-combination-error';
 
-export function calculateEquipmentController(req: Request, res: Response): void {
-    const carryWeight = intParameter(req, 'unitCarryWeight');
-    const element = elementParameter(req, 'unitElement');
-    const ranged = booleanParameter(req, 'unitRanged');
-    const waffenschmiede = intParameter(req, 'waffenschmiede');
-    const rangedRequired = booleanParameter(req, 'rangedRequired');
-    const rangedForbidden = booleanParameter(req, 'rangedForbidden');
-    const apWeight = intParameter(req, 'apWeight');
-    const vpWeight = intParameter(req, 'vpWeight');
-    const hpWeight = intParameter(req, 'hpWeight');
-    const mpWeight = intParameter(req, 'mpWeight');
-    const elementAttack = optionalElementParameter(req, 'elementAttack');
-    const elementDefense = optionalElementParameter(req, 'elementDefense');
+export function calculateEquipmentController(rawData: RawData): Promise<EquipmentSet> {
+    const {
+        unitCarryWeight,
+        unitElement,
+        unitRanged,
+        waffenschmiede,
+        rangedRequired,
+        rangedForbidden,
+        apWeight,
+        vpWeight,
+        hpWeight,
+        mpWeight,
+        elementAttack,
+        elementDefense,
+    } = JSON.parse(rawData.toString());
 
-    calculateEquipment(
-        carryWeight,
-        element,
-        ranged,
+    return calculateEquipment(
+        unitCarryWeight,
+        unitElement,
+        unitRanged,
         waffenschmiede,
         rangedRequired,
         rangedForbidden,
@@ -48,9 +50,7 @@ export function calculateEquipmentController(req: Request, res: Response): void 
         mpWeight,
         elementAttack,
         elementDefense
-    )
-        .then((set) => res.send(JSON.stringify(set)))
-        .catch((error) => res.status(500).send(error));
+    );
 }
 
 function calculateEquipment(
@@ -217,24 +217,4 @@ function filterInvalidItems(
             (unitRanged || !ranged) &&
             (wantedElements.length === 0 || wantedElements.includes(element))
     );
-}
-
-function intParameter(request: Request, name: string): number {
-    const param: string = request.query[name] as string;
-    return Number.parseInt(param);
-}
-
-function elementParameter(request: Request, name: string): Element {
-    const param: unknown = request.query[name];
-    return param ? Element[param as keyof typeof Element] : Element.NONE;
-}
-
-function optionalElementParameter(request: Request, name: string): Element | undefined {
-    const param: unknown = request.query[name];
-    return param ? Element[param as keyof typeof Element] : undefined;
-}
-
-function booleanParameter(request: Request, name: string): boolean {
-    const param: unknown = request.query[name];
-    return param === 'true';
 }
