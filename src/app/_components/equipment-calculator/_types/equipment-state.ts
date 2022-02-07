@@ -20,6 +20,7 @@ export class EquipmentState {
     mpWeight = 0;
 
     set?: EquipmentSet;
+    compareSet?: EquipmentSet;
     status = IDLE_STATUS;
 }
 

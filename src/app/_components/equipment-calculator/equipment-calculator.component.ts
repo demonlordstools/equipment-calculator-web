@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CompositeSubscription } from '../../_types/composite-subscription';
 import { Element } from '../../../shared/_types/element';
+import { EquipmentSet } from '../../../shared/_types/equipment-set';
 
 import { EquipmentStore } from './_services/equipment.store';
 import { StatWeightingFormData } from './_types/stat-weighting-form-data';
@@ -77,5 +78,13 @@ export class EquipmentCalculatorComponent {
 
     onWaffenschmiedeChanged(waffenschmiede: number): void {
         this.store.updateWaffenschmiede(waffenschmiede);
+    }
+
+    markForComparison(set: EquipmentSet): void {
+        this.store.markForComparison(set);
+    }
+
+    removeCompareSet(): void {
+        this.store.removeCompareSet();
     }
 }

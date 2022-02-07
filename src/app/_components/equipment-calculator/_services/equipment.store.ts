@@ -23,6 +23,8 @@ import { unitByName } from '../../../_types/unit';
 import { EquipmentSet } from '../../../../shared/_types/equipment-set';
 import {
     CalculateEquipment,
+    MarkForComparison,
+    RemoveCompareSet,
     UpdateAttackElement,
     UpdateCarryWeight,
     UpdateDefenseElement,
@@ -111,6 +113,14 @@ export class EquipmentStore {
 
     updateWaffenschmiede(waffenschmiede: number): void {
         this.dispatch(new UpdateWaffenschmiede(waffenschmiede));
+    }
+
+    markForComparison(set: EquipmentSet): void {
+        this.dispatch(new MarkForComparison(set));
+    }
+
+    removeCompareSet(): void {
+        this.dispatch(new RemoveCompareSet());
     }
 
     private dispatch(...actions: Array<Action>): void {
@@ -218,6 +228,8 @@ export class EquipmentStore {
         if (action instanceof UpdateDefenseElement) return this.onUpdateDefenseElement(action);
         if (action instanceof UpdateRangedRequired) return this.onUpdatedRangedRequired(action);
         if (action instanceof UpdateRangedForbidden) return this.onUpdateRangedForbidden(action);
+        if (action instanceof MarkForComparison) return this.onMarkForComparison(action);
+        if (action instanceof RemoveCompareSet) return this.onRemoveCompareSet();
 
         return of(IDLE_STATE);
     }
@@ -314,6 +326,27 @@ export class EquipmentStore {
                 ...state,
                 rangedForbidden: action.rangedForbidden,
                 rangedRequired: false,
+            }))
+        );
+    }
+
+    private onMarkForComparison(action: MarkForComparison): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                set: undefined,
+                compareSet: action.set,
+            }))
+        );
+    }
+
+    private onRemoveCompareSet(): Observable<Partial<EquipmentState>> {
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({
+                ...state,
+                compareSet: undefined,
             }))
         );
     }

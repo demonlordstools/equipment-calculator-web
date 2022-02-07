@@ -29,9 +29,27 @@
         min-width: 80px;
     }
 
+    .compareValue {
+        display: none;
+        min-width: 80px;
+
+        &.better {
+            display: inline-block;
+            color: green;
+
+            &:before {
+                content: '+'
+            }
+        }
+
+        &.worse {
+            display: inline-block;
+            color: red;
+        }
+    }
+
     .icons img {
         vertical-align: sub;
     }
 }
-
 

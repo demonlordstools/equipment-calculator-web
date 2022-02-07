@@ -26,6 +26,10 @@
             <span class="set-label">AP:</span>
             <span class="set-value">
                 <span class="value">{{ totalAP(set, schmiedekunst) }}</span>
+                <span *ngIf="compareWith"
+                      [class.better]="differenceAP(set, compareWith) > 0"
+                      [class.worse]="differenceAP(set, compareWith) < 0"
+                      class="compareValue">{{ differenceAP(set, compareWith) }}</span>
                 <span class="icons">
                     <img *ngIf="set.weapon.ranged" src="assets/images/ranged.png">
                     <img *ngFor="let elementIcon of getOffenseElementIcons()" [src]="elementIcon">
@@ -36,6 +40,10 @@
             <span class="set-label">VP:</span>
             <span class="set-value">
                 <span class="value">{{ totalVP(set, schmiedekunst) }}</span>
+                <span *ngIf="compareWith"
+                      [class.better]="differenceVP(set, compareWith) > 0"
+                      [class.worse]="differenceVP(set, compareWith) < 0"
+                      class="compareValue">{{ differenceVP(set, compareWith) }}</span>
                 <span class="icons">
                     <img *ngFor="let elementIcon of getDefenseElementIcons()" [src]="elementIcon">
                 </span>
@@ -45,12 +53,20 @@
             <span class="set-label">HP:</span>
             <span class="set-value">
                 <span class="value">{{ totalHP(set, schmiedekunst) }}</span>
+                <span *ngIf="compareWith"
+                      [class.better]="differenceHP(set, compareWith) > 0"
+                      [class.worse]="differenceHP(set, compareWith) < 0"
+                      class="compareValue">{{ differenceHP(set, compareWith) }}</span>
             </span>
         </div>
         <div class="set-row">
             <span class="set-label">MP:</span>
             <span class="set-value">
                 <span class="value">{{ totalMP(set, schmiedekunst) }}</span>
+                <span *ngIf="compareWith"
+                      [class.better]="differenceMP(set, compareWith) > 0"
+                      [class.worse]="differenceMP(set, compareWith) < 0"
+                      class="compareValue">{{ differenceMP(set, compareWith) }}</span>
             </span>
         </div>
         <div class="set-row">

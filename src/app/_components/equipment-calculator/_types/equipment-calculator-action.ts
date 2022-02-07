@@ -1,5 +1,6 @@
 import { Action } from '../../../_types/action';
 import { Element } from '../../../../shared/_types/element';
+import { EquipmentSet } from '../../../../shared/_types/equipment-set';
 
 import { StatWeightingFormData } from './stat-weighting-form-data';
 
@@ -70,3 +71,11 @@ export class UpdateStatWeightingData extends Action {
         super();
     }
 }
+
+export class MarkForComparison extends Action {
+    constructor(public set: EquipmentSet) {
+        super();
+    }
+}
+
+export class RemoveCompareSet extends Action {}

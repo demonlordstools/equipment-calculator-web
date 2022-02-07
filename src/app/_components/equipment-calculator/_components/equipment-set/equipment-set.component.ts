@@ -18,6 +18,7 @@ import { Element } from '../../../../../shared/_types/element';
 export class EquipmentSetComponent {
     @Input() unitElement = Element.NONE;
     @Input() set?: EquipmentSet;
+    @Input() compareWith?: EquipmentSet;
     @Input() schmiedekunst = 0;
 
     totalAP = totalAP;
@@ -64,5 +65,21 @@ export class EquipmentSetComponent {
                 break;
         }
         return result;
+    }
+
+    differenceAP(set: EquipmentSet, compareWith: EquipmentSet): number {
+        return totalAP(set, this.schmiedekunst) - totalAP(compareWith, this.schmiedekunst);
+    }
+
+    differenceVP(set: EquipmentSet, compareWith: EquipmentSet): number {
+        return totalVP(set, this.schmiedekunst) - totalVP(compareWith, this.schmiedekunst);
+    }
+
+    differenceHP(set: EquipmentSet, compareWith: EquipmentSet): number {
+        return totalHP(set, this.schmiedekunst) - totalHP(compareWith, this.schmiedekunst);
+    }
+
+    differenceMP(set: EquipmentSet, compareWith: EquipmentSet): number {
+        return totalMP(set, this.schmiedekunst) - totalMP(compareWith, this.schmiedekunst);
     }
 }

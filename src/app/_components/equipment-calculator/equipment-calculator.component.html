@@ -41,10 +41,31 @@
     </button>
 
     <mat-card *ngIf="state.set as set">
+        <mat-card-title>
+            <button (click)="markForComparison(set)" mat-icon-button>
+                <mat-icon>bookmark_border</mat-icon>
+            </button>
+        </mat-card-title>
+        <mat-card-content>
+            <app-equipment-set
+                [compareWith]="state.compareSet"
+                [schmiedekunst]="state.schmiedekunst"
+                [set]="set"
+                [unitElement]="state.element"
+            ></app-equipment-set>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="state.compareSet as compareSet">
+        <mat-card-title>
+            <button (click)="removeCompareSet()" mat-icon-button>
+                <mat-icon>bookmark</mat-icon>
+            </button>
+        </mat-card-title>
         <mat-card-content>
             <app-equipment-set
                 [schmiedekunst]="state.schmiedekunst"
-                [set]="set"
+                [set]="compareSet"
                 [unitElement]="state.element"
             ></app-equipment-set>
         </mat-card-content>
