@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { mergeMap, Observable, of, Subject, tap } from 'rxjs';
 
 import { WEBSOCKET_ERROR_CODE } from '../../shared/_types/error';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class WebSocketService {
-    wsEndpoint = `ws://${location.host}`;
+    wsEndpoint = environment.production ? `wss://${location.host}` : `ws://${location.host}`;
 
     public sendMessage<T>(message: unknown): Observable<T> {
         return of(undefined).pipe(
