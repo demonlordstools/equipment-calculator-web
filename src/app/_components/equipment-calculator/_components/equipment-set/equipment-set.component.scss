@@ -1,22 +1,35 @@
+:host {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .set-row {
+    width: 100%;
     font-size: 16px;
     height: 40px;
     line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .set-label {
     display: inline-block;
-    min-width: 120px;
+    min-width: 88px;
     padding-right: 16px;
 }
 
 .set-items {
     display: inline-block;
-    width: 450px;
+    flex: 288px 1 1;
+    max-width: 100%;
 }
 
 .set-stats {
     display: inline-block;
+    flex: 288px 0 0;
+    max-width: 100%;
 
     .set-label {
         min-width: 56px;
