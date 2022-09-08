@@ -14,8 +14,13 @@ jobs:
         working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
-      - run: ./gradlew check
-      - run: ./gradlew build
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      - run: ./gradlew check --no-daemon
+      - run: ./gradlew build --no-daemon
 
   webclient:
     runs-on: ubuntu-latest
@@ -24,6 +29,12 @@ jobs:
         working-directory: ./webclient
     steps:
       - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          cache-dependency-path: ./webclient/package-lock.json
       - run: npm ci
       - run: npm run build
       - run: npm run lint
