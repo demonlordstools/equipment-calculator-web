@@ -2,6 +2,12 @@
 
 # Compiled output
 /dist
+/webclient/dist
+/webclient/node_modules
+/webclient/.angular/cache
+/backend/build
+/backend/.gradle
+
 /tmp
 /out-tsc
 /bazel-out
