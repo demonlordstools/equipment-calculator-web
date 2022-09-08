@@ -1,35 +1,40 @@
 name: Deployment
 
 on:
-    release:
-        types: [ published ]
-
-    workflow_dispatch:
+  release:
+    types: [ published ]
+  
+  workflow_dispatch:
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+          -
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'placeholder'
 
-        steps:
-            -   uses: actions/checkout@v3
+      - name: Adding Known Hosts
+        run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-            -   name: Install SSH Key
-                uses: shimataro/ssh-key-action@v2
-                with:
-                    key: ${{ secrets.SSH_PRIVATE_KEY }}
-                    known_hosts: 'placeholder'
+      - name: use NodeJs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
 
-            -   name: Adding Known Hosts
-                run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: build webclient
+        working-directory: ./webclient
+        run: npm ci && npm run build
 
-            -   name: use NodeJs
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 16.x
-                    cache: 'npm'
+      - name: build backend
+        working-directory: ./backend
+        run: ./gradlew build
 
-            -   name: build app
-                run: npm ci && npm run build
-
-            -   name: Deploy with rsync
-                run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" ./dist/dl-equipment-calculator-web/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/ausruestung.dl-tools.de/
+      - name: Deploy with rsync
+        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }}" ./dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/ausruestung.dl-tools.de/
