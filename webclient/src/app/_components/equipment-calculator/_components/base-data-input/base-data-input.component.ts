@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Element, elements } from "src/app/_types/element";
-import { MatCheckboxChange } from "@angular/material/checkbox";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Element, elements } from 'src/app/_types/element';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
-import { ALL_UNITS } from "../../../../_types/unit";
-import { InvalidInputError } from "../../../../_types/invalid-input-error";
+import { ALL_UNITS } from '../../../../_types/unit';
+import { InvalidInputError } from '../../../../_types/invalid-input-error';
 
 @Component({
-    selector: "app-base-data-input",
-    templateUrl: "./base-data-input.component.html",
-    styleUrls: ["./base-data-input.component.scss"]
+    selector: 'app-base-data-input',
+    templateUrl: './base-data-input.component.html',
+    styleUrls: ['./base-data-input.component.scss'],
 })
 export class BaseDataInputComponent {
     @Input() waffenschmiede = 0;

@@ -1,26 +1,26 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { EquipmentSet } from "../_types/equipment-set";
-import { Cache } from "../_types/cache";
-import { cached } from "../_util/operators";
-import { Element } from "../_types/element";
+import { EquipmentSet } from '../_types/equipment-set';
+import { Cache } from '../_types/cache';
+import { cached } from '../_util/operators';
+import { Element } from '../_types/element';
 
-import { CacheService } from "./cache.service";
-import { ApiService } from "./api.service";
+import { CacheService } from './cache.service';
+import { ApiService } from './api.service';
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root',
 })
 export class EquipmentService {
     private equipmentCache: Cache<EquipmentSet>;
 
     constructor(private apiService: ApiService, cacheService: CacheService) {
-        this.equipmentCache = cacheService.get<EquipmentSet>("equipmentCache");
+        this.equipmentCache = cacheService.get<EquipmentSet>('equipmentCache');
     }
 
     private static getCacheKey(...objects: Array<unknown>): string {
-        return objects.join(":");
+        return objects.join(':');
     }
 
     getEquipment(
@@ -54,7 +54,7 @@ export class EquipmentService {
         );
 
         return this.apiService
-            .get<EquipmentSet>("/", {
+            .get<EquipmentSet>('/', {
                 unitCarryWeight: carryWeight,
                 unitElement: element,
                 unitRanged: ranged,
@@ -66,7 +66,7 @@ export class EquipmentService {
                 apWeight,
                 vpWeight,
                 hpWeight,
-                mpWeight
+                mpWeight,
             })
             .pipe(cached(this.equipmentCache, cacheKey));
     }

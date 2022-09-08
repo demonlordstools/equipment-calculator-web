@@ -1,4 +1,4 @@
-import { Element } from "../../../_types/element";
+import { Element } from '../../../_types/element';
 
 export interface BaseDataFormData {
     waffenschmiede: number;

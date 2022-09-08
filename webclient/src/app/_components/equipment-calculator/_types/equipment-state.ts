@@ -1,6 +1,6 @@
-import { EquipmentSet } from "../../../_types/equipment-set";
-import { Element } from "../../../_types/element";
-import { Error } from "../../../_types/error";
+import { EquipmentSet } from '../../../_types/equipment-set';
+import { Element } from '../../../_types/element';
+import { Error } from '../../../_types/error';
 
 export class EquipmentState {
     waffenschmiede = 0;
@@ -33,33 +33,33 @@ interface Status {
 const IDLE_STATUS: Status = {
     loading: false,
     error: undefined,
-    idle: true
+    idle: true,
 };
 
 const LOADING_STATUS: Status = {
     loading: true,
     error: undefined,
-    idle: false
+    idle: false,
 };
 
 function errorStatus(error: Error): Status {
     return {
         loading: false,
         error: error,
-        idle: false
+        idle: false,
     };
 }
 
 export const IDLE_STATE: Partial<EquipmentState> = {
-    status: IDLE_STATUS
+    status: IDLE_STATUS,
 };
 
 export const LOADING_STATE: Partial<EquipmentState> = {
-    status: LOADING_STATUS
+    status: LOADING_STATUS,
 };
 
 export function errorState(error: Error): Partial<EquipmentState> {
     return {
-        status: errorStatus(error)
+        status: errorStatus(error),
     };
 }

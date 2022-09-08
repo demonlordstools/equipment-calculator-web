@@ -1,8 +1,8 @@
-import { Action } from "../../../_types/action";
-import { Element } from "../../../_types/element";
-import { EquipmentSet } from "../../../_types/equipment-set";
+import { Action } from '../../../_types/action';
+import { Element } from '../../../_types/element';
+import { EquipmentSet } from '../../../_types/equipment-set';
 
-import { StatWeightingFormData } from "./stat-weighting-form-data";
+import { StatWeightingFormData } from './stat-weighting-form-data';
 
 export class UpdateWaffenschmiede extends Action {
     constructor(public waffenschmiede: number) {
@@ -64,8 +64,7 @@ export class UpdateDefenseElement extends Action {
     }
 }
 
-export class CalculateEquipment extends Action {
-}
+export class CalculateEquipment extends Action {}
 
 export class UpdateStatWeightingData extends Action {
     constructor(public data: StatWeightingFormData) {
@@ -79,5 +78,4 @@ export class MarkForComparison extends Action {
     }
 }
 
-export class RemoveCompareSet extends Action {
-}
+export class RemoveCompareSet extends Action {}

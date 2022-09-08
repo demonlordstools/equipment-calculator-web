@@ -1,12 +1,12 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
-import { EquipmentSet, totalAP, totalHP, totalMP, totalVP, totalWeight } from "../../../../_types/equipment-set";
-import { Element } from "../../../../_types/element";
+import { EquipmentSet, totalAP, totalHP, totalMP, totalVP, totalWeight } from '../../../../_types/equipment-set';
+import { Element } from '../../../../_types/element';
 
 @Component({
-    selector: "app-equipment-set",
-    templateUrl: "./equipment-set.component.html",
-    styleUrls: ["./equipment-set.component.scss"]
+    selector: 'app-equipment-set',
+    templateUrl: './equipment-set.component.html',
+    styleUrls: ['./equipment-set.component.scss'],
 })
 export class EquipmentSetComponent {
     @Input() unitElement = Element.NONE;
@@ -39,22 +39,22 @@ export class EquipmentSetComponent {
         const result = [];
         switch (element) {
             case Element.FIRE_AIR:
-                result.push("assets/images/fire.gif", "assets/images/wind.gif");
+                result.push('assets/images/fire.gif', 'assets/images/wind.gif');
                 break;
             case Element.FIRE:
-                result.push("assets/images/fire.gif");
+                result.push('assets/images/fire.gif');
                 break;
             case Element.AIR:
-                result.push("assets/images/wind.gif");
+                result.push('assets/images/wind.gif');
                 break;
             case Element.EARTH_ICE:
-                result.push("assets/images/earth.gif", "assets/images/ice.gif");
+                result.push('assets/images/earth.gif', 'assets/images/ice.gif');
                 break;
             case Element.EARTH:
-                result.push("assets/images/earth.gif");
+                result.push('assets/images/earth.gif');
                 break;
             case Element.ICE:
-                result.push("assets/images/ice.gif");
+                result.push('assets/images/ice.gif');
                 break;
         }
         return result;

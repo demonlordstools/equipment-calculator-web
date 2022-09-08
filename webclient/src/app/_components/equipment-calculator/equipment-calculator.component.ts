@@ -1,19 +1,19 @@
-import { Component, Self } from "@angular/core";
-import { distinctUntilChanged, filter, map } from "rxjs";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { Component, Self } from '@angular/core';
+import { distinctUntilChanged, filter, map } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { CompositeSubscription } from "../../_types/composite-subscription";
-import { Element } from "../../_types/element";
-import { EquipmentSet } from "../../_types/equipment-set";
+import { CompositeSubscription } from '../../_types/composite-subscription';
+import { Element } from '../../_types/element';
+import { EquipmentSet } from '../../_types/equipment-set';
 
-import { EquipmentStore } from "./_services/equipment.store";
-import { StatWeightingFormData } from "./_types/stat-weighting-form-data";
+import { EquipmentStore } from './_services/equipment.store';
+import { StatWeightingFormData } from './_types/stat-weighting-form-data';
 
 @Component({
-    selector: "app-equipment-calculator",
-    templateUrl: "./equipment-calculator.component.html",
-    styleUrls: ["./equipment-calculator.component.scss"],
-    providers: [EquipmentStore]
+    selector: 'app-equipment-calculator',
+    templateUrl: './equipment-calculator.component.html',
+    styleUrls: ['./equipment-calculator.component.scss'],
+    providers: [EquipmentStore],
 })
 export class EquipmentCalculatorComponent {
     subscriptions = new CompositeSubscription();
@@ -27,7 +27,7 @@ export class EquipmentCalculatorComponent {
                     filter((status) => !!status.error)
                 )
                 .subscribe((status) => {
-                    this.snackbar.open(`Da ist was schief gegangen: ${status.error?.message}`, "", { duration: 5000 });
+                    this.snackbar.open(`Da ist was schief gegangen: ${status.error?.message}`, '', { duration: 5000 });
                 })
         );
     }

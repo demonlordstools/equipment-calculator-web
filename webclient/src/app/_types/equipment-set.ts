@@ -1,4 +1,4 @@
-import { ap, Equipment, hp, mp, vp } from "./equipment";
+import { ap, Equipment, hp, mp, vp } from './equipment';
 
 export interface EquipmentSet {
     weapon: Equipment;

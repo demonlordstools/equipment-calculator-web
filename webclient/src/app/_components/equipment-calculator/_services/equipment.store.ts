@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
     asyncScheduler,
     BehaviorSubject,
@@ -12,15 +12,15 @@ import {
     startWith,
     Subject,
     take,
-    tap
-} from "rxjs";
+    tap,
+} from 'rxjs';
 
-import { EquipmentState, errorState, IDLE_STATE, LOADING_STATE } from "../_types/equipment-state";
-import { EquipmentService } from "../../../_services/equipment.service";
-import { Action } from "../../../_types/action";
-import { Error } from "../../../_types/error";
-import { unitByName } from "../../../_types/unit";
-import { EquipmentSet } from "../../../_types/equipment-set";
+import { EquipmentState, errorState, IDLE_STATE, LOADING_STATE } from '../_types/equipment-state';
+import { EquipmentService } from '../../../_services/equipment.service';
+import { Action } from '../../../_types/action';
+import { Error } from '../../../_types/error';
+import { unitByName } from '../../../_types/unit';
+import { EquipmentSet } from '../../../_types/equipment-set';
 import {
     CalculateEquipment,
     MarkForComparison,
@@ -35,15 +35,15 @@ import {
     UpdateSelectedUnit,
     UpdateStatWeightingData,
     UpdateUnitElement,
-    UpdateWaffenschmiede
-} from "../_types/equipment-calculator-action";
-import { StatWeightingFormData } from "../_types/stat-weighting-form-data";
-import { InvalidUnitError } from "../../../_types/invalid-unit-error";
-import { Element } from "../../../_types/element";
-import { StorageService } from "../../../_services/storage.service";
-import { ErrorType } from "../../../_types/error-type";
-import { ElementMismatchError } from "../../../_types/element-mismatch-error";
-import { InvalidItemCombinationError } from "../../../_types/invalid-item-combination-error";
+    UpdateWaffenschmiede,
+} from '../_types/equipment-calculator-action';
+import { StatWeightingFormData } from '../_types/stat-weighting-form-data';
+import { InvalidUnitError } from '../../../_types/invalid-unit-error';
+import { Element } from '../../../_types/element';
+import { StorageService } from '../../../_services/storage.service';
+import { ErrorType } from '../../../_types/error-type';
+import { ElementMismatchError } from '../../../_types/element-mismatch-error';
+import { InvalidItemCombinationError } from '../../../_types/invalid-item-combination-error';
 
 @Injectable()
 export class EquipmentStore {
@@ -144,39 +144,39 @@ export class EquipmentStore {
             mergeMap((state) => {
                 return state.selectedUnit
                     ? this.equipmentService
-                        .getEquipment(
-                            state.selectedUnit,
-                            state.carryWeight,
-                            state.element,
-                            state.ranged,
-                            state.waffenschmiede,
-                            state.rangedRequired,
-                            state.rangedForbidden,
-                            state.apWeight,
-                            state.vpWeight,
-                            state.hpWeight,
-                            state.mpWeight,
-                            state.elementAttack,
-                            state.elementDefense
-                        )
-                        .pipe(
-                            take(1),
-                            map((set: EquipmentSet) => ({
-                                set,
-                                ...IDLE_STATE
-                            })),
-                            startWith(LOADING_STATE),
-                            catchError((error: Error) => {
-                                console.error("Error calculating equipment set:", error);
-                                if (error.message === ErrorType.ELEMENT_MISMATCH) {
-                                    return of(errorState(new ElementMismatchError()));
-                                } else if (error.message === ErrorType.INVALID_ITEM_COMBINATION) {
-                                    return of(errorState(new InvalidItemCombinationError()));
-                                }
-                                return of(errorState(error));
-                            })
-                        )
-                    : this.errorState(new InvalidUnitError("Keine Einheit ausgewählt."));
+                          .getEquipment(
+                              state.selectedUnit,
+                              state.carryWeight,
+                              state.element,
+                              state.ranged,
+                              state.waffenschmiede,
+                              state.rangedRequired,
+                              state.rangedForbidden,
+                              state.apWeight,
+                              state.vpWeight,
+                              state.hpWeight,
+                              state.mpWeight,
+                              state.elementAttack,
+                              state.elementDefense
+                          )
+                          .pipe(
+                              take(1),
+                              map((set: EquipmentSet) => ({
+                                  set,
+                                  ...IDLE_STATE,
+                              })),
+                              startWith(LOADING_STATE),
+                              catchError((error: Error) => {
+                                  console.error('Error calculating equipment set:', error);
+                                  if (error.message === ErrorType.ELEMENT_MISMATCH) {
+                                      return of(errorState(new ElementMismatchError()));
+                                  } else if (error.message === ErrorType.INVALID_ITEM_COMBINATION) {
+                                      return of(errorState(new InvalidItemCombinationError()));
+                                  }
+                                  return of(errorState(error));
+                              })
+                          )
+                    : this.errorState(new InvalidUnitError('Keine Einheit ausgewählt.'));
             })
         );
     }
@@ -187,7 +187,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                waffenschmiede
+                waffenschmiede,
             })),
             tap(() => {
                 this.storageService.saveWaffenschmiede(waffenschmiede);
@@ -201,7 +201,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                schmiedekunst
+                schmiedekunst,
             })),
             tap(() => {
                 this.storageService.saveSchmiedekunst(schmiedekunst);
@@ -219,7 +219,7 @@ export class EquipmentStore {
                 vpWeight,
                 hpWeight,
                 mpWeight,
-                ...IDLE_STATE
+                ...IDLE_STATE,
             }))
         );
     }
@@ -244,7 +244,10 @@ export class EquipmentStore {
     }
 
     private errorState(error: Error): Observable<Partial<EquipmentState>> {
-        return this.state$.pipe(take(1), map((state) => ({ ...state, ...errorState(error) })));
+        return this.state$.pipe(
+            take(1),
+            map((state) => ({ ...state, ...errorState(error) }))
+        );
     }
 
     private onUpdateSelectedUnit(action: UpdateSelectedUnit): Observable<Partial<EquipmentState>> {
@@ -259,7 +262,7 @@ export class EquipmentStore {
                     element: unit?.element || Element.NONE,
                     ranged: unit?.ranged,
                     rangedRequired: false,
-                    rangedForbidden: false
+                    rangedForbidden: false,
                 };
             })
         );
@@ -270,7 +273,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                carryWeight: action.carryWeight
+                carryWeight: action.carryWeight,
             }))
         );
     }
@@ -280,7 +283,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                element: action.element
+                element: action.element,
             }))
         );
     }
@@ -292,7 +295,7 @@ export class EquipmentStore {
                 ...state,
                 ranged: action.ranged,
                 rangedRequired: false,
-                rangedForbidden: false
+                rangedForbidden: false,
             }))
         );
     }
@@ -302,7 +305,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                elementAttack: action.element
+                elementAttack: action.element,
             }))
         );
     }
@@ -312,7 +315,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                elementDefense: action.element
+                elementDefense: action.element,
             }))
         );
     }
@@ -323,7 +326,7 @@ export class EquipmentStore {
             map((state) => ({
                 ...state,
                 rangedRequired: action.rangedRequired,
-                rangedForbidden: false
+                rangedForbidden: false,
             }))
         );
     }
@@ -334,7 +337,7 @@ export class EquipmentStore {
             map((state) => ({
                 ...state,
                 rangedForbidden: action.rangedForbidden,
-                rangedRequired: false
+                rangedRequired: false,
             }))
         );
     }
@@ -345,7 +348,7 @@ export class EquipmentStore {
             map((state) => ({
                 ...state,
                 set: undefined,
-                compareSet: action.set
+                compareSet: action.set,
             }))
         );
     }
@@ -355,7 +358,7 @@ export class EquipmentStore {
             take(1),
             map((state) => ({
                 ...state,
-                compareSet: undefined
+                compareSet: undefined,
             }))
         );
     }
