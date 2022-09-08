@@ -12,7 +12,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-          -
+
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -21,12 +21,6 @@ jobs:
 
       - name: Adding Known Hosts
         run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: use NodeJs
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: 'npm'
 
       - name: build webclient
         working-directory: ./webclient

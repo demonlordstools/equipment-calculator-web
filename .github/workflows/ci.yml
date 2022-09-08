@@ -13,6 +13,7 @@ jobs:
       run:
         working-directory: ./backend
     steps:
+      - uses: actions/checkout@v3
       - run: ./gradlew check
       - run: ./gradlew build
 
@@ -23,11 +24,6 @@ jobs:
         working-directory: ./webclient
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: 'npm'
       - run: npm ci
       - run: npm run build
       - run: npm run lint
