@@ -1,18 +1,13 @@
-import express from 'express';
-import { WebSocket } from 'ws';
+import { createServer } from 'http';
+
+import { WebSocketServer } from 'ws';
 
 import { WEBSOCKET_ERROR_CODE } from '../shared/_types/error';
 
 import { calculateEquipmentController } from './equipment-calculation';
 
-const app = express();
-// @ts-ignore
-const port: number = process.env.PORT || 3000;
-
-// serves the angular frontend
-app.use('/', express.static('dist/dl-equipment-calculator-web/'));
-
-const wss = new WebSocket.Server({ noServer: true });
+const server = createServer();
+const wss = new WebSocketServer({ noServer: true });
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
@@ -22,9 +17,9 @@ wss.on('connection', (ws) => {
     });
 });
 
-const server = app.listen(port);
 server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (socket) => {
         wss.emit('connection', socket, request);
     });
 });
+server.listen(process.env['PORT'] || 3000);
