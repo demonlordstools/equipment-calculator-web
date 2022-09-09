@@ -147,7 +147,7 @@ class EquipmentController {
                             if (
                                     validWeightAndElements(unitElement, unitCarryWeight, weapon, armour, shield, helmet, accessory)
                             ) {
-                                val newSet = EquipmentSet(weapon, armour, shield, helmet, accessory)
+                                val newSet = EquipmentSet(weapon = weapon, armour = armour, shield = shield, helmet = helmet, accessory = accessory)
                                 result = if (
                                         newSet.getWeightedTotalStats(apWeight, vpWeight, hpWeight, mpWeight) >
                                         result.getWeightedTotalStats(apWeight, vpWeight, hpWeight, mpWeight))
