@@ -4,10 +4,11 @@ import dl.equipmentCalculator.controller.EquipmentController.Companion.LOG
 import dl.equipmentCalculator.model.exception.ElementMismatchException
 
 enum class Element(
-        val hasFire: Boolean = false,
-        val hasEarth: Boolean = false,
-        val hasAir: Boolean = false,
-        val hasIce: Boolean = false) {
+    val hasFire: Boolean = false,
+    val hasEarth: Boolean = false,
+    val hasAir: Boolean = false,
+    val hasIce: Boolean = false
+) {
     NONE,
     FIRE(hasFire = true),
     EARTH(hasEarth = true),
@@ -17,11 +18,12 @@ enum class Element(
     EARTH_ICE(hasEarth = true, hasIce = true);
 
     companion object {
-        fun isValidElementCombination(vararg elements: Element): Boolean {
+        fun isValidElementCombination(vararg elements: Element?): Boolean {
             var resultingElement = NONE
             return try {
                 for (element in elements) {
-                    resultingElement = combineElements(resultingElement, element)
+                    resultingElement =
+                        if (element === null) resultingElement else combineElements(resultingElement, element)
                 }
                 true
             } catch (_: ElementMismatchException) {
