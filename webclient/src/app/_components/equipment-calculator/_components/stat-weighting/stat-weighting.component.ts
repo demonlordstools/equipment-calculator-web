@@ -28,7 +28,12 @@ export class StatWeightingComponent implements OnInit, OnDestroy {
             this.form.valueChanges
                 .pipe(
                     tap((changes) => {
-                        this.changed.emit(changes);
+                        this.changed.emit({
+                            apWeight: changes.apWeight || 0,
+                            vpWeight: changes.vpWeight || 0,
+                            hpWeight: changes.hpWeight || 0,
+                            mpWeight: changes.mpWeight || 0,
+                        });
                     })
                 )
                 .subscribe()
