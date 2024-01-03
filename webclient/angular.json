@@ -78,10 +78,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "dl-equipment-calculator-web:build:production"
+                            "buildTarget": "dl-equipment-calculator-web:build:production"
                         },
                         "development": {
-                            "browserTarget": "dl-equipment-calculator-web:build:development"
+                            "buildTarget": "dl-equipment-calculator-web:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
