@@ -6,6 +6,7 @@
 /webclient/node_modules
 /webclient/.angular/cache
 /backend/build
+/backend/bin
 /backend/.gradle
 
 /tmp
