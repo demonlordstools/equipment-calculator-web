@@ -29,10 +29,10 @@ import org.springframework.web.server.ResponseStatusException
 
 @CrossOrigin
 @RestController
-@Cacheable("equipmentSet")
 class EquipmentController {
 
     @GetMapping
+    @Cacheable("equipmentSet")
     fun calculate(
         @RequestParam(value = "unitCarryWeight", defaultValue = "0") unitCarryWeight: Int,
         @RequestParam(value = "unitElement", defaultValue = "NONE") unitElement: Element = Element.NONE,
