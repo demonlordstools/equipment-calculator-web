@@ -173,7 +173,7 @@ data class Equipment(
                 Equipment(ap = 100, vp = 30, hp = 5, mp = 0, weight = 40, ranged = false, element = Element.ICE, requiredWaffenschmiede = 7, name = "Eissäbel"),
                 Equipment(ap = 200, vp = 50, hp = 0, mp = 0, weight = 50, ranged = false, element = Element.FIRE, requiredWaffenschmiede = 7, name = "Blutbeflecktes Schwert des Zorns"),
                 Equipment(ap = 400, vp = 120, hp = 120, mp = 0, weight = 155, ranged = false, element = Element.NONE, requiredWaffenschmiede = 8, name = "Götterzucht"),
-                Equipment(ap = 400, vp = 0, hp = 0, mp = 50, weight = 85, ranged = false, element = Element.ICE, requiredWaffenschmiede = 9, name = "Hammer des Gletscherkönigs"),
+                Equipment(ap = 400, vp = 0, hp = 0, mp = 50, weight = 80, ranged = false, element = Element.ICE, requiredWaffenschmiede = 9, name = "Hammer des Gletscherkönigs"),
                 Equipment(ap = 100, vp = 0, hp = 0, mp = 200, weight = 35, ranged = false, element = Element.NONE, requiredWaffenschmiede = 9, name = "Stab der Erleuchtung"),
                 Equipment(ap = 130, vp = 0, hp = 0, mp = 0, weight = 35, ranged = true, element = Element.NONE, requiredWaffenschmiede = 9, name = "Uralter Sauwerfer"),
                 Equipment(ap = 450, vp = 25, hp = 25, mp = 0, weight = 225, ranged = false, element = Element.EARTH, requiredWaffenschmiede = 10, name = "Titanengladius"),
