@@ -179,7 +179,7 @@ data class Equipment(
                 Equipment(ap = 450, vp = 25, hp = 25, mp = 0, weight = 225, ranged = false, element = Element.EARTH, requiredWaffenschmiede = 10, name = "Titanengladius"),
                 Equipment(ap = 410, vp = -10, hp = -10, mp = 0, weight = 160, ranged = false, element = Element.FIRE, requiredWaffenschmiede = 10, name = "Höllenschwert"),
                 Equipment(ap = 510, vp = 60, hp = 15, mp = 0, weight = 200, ranged = false, element = Element.ICE, requiredWaffenschmiede = 10, name = "Dimensionenklingen"),
-                Equipment(ap = 380, vp = 0, hp = 0, mp = 0, weight = 180, ranged = true, element = Element.NONE, requiredWaffenschmiede = 10, name = "Karmesinroter Bogen"),
+                Equipment(ap = 380, vp = 0, hp = 0, mp = 0, weight = 180, ranged = true, element = Element.FIRE, requiredWaffenschmiede = 10, name = "Karmesinroter Bogen"),
                 Equipment(ap = 600, vp = 200, hp = 200, mp = 20, weight = 300, ranged = false, element = Element.AIR, requiredWaffenschmiede = 10, name = "Mjölnir"),
                 Equipment(ap = 400, vp = 200, hp = 200, mp = 0, weight = 103, ranged = false, element = Element.NONE, requiredWaffenschmiede = 10, name = "Verzauberte Knochenaxt"),
         )
