@@ -140,7 +140,7 @@ data class Equipment(
                 Equipment(ap = 35, vp = 10, hp = 10, mp = 0, weight = 9, ranged = false, element = Element.NONE, requiredWaffenschmiede = 1, name = "Kurzschwert"),
                 Equipment(ap = 10, vp = 0, hp = 0, mp = 0, weight = 3, ranged = true, element = Element.NONE, requiredWaffenschmiede = 1, name = "Wurfpfeile"),
                 Equipment(ap = 15, vp = 0, hp = 0, mp = 10, weight = 15, ranged = false, element = Element.NONE, requiredWaffenschmiede = 1, name = "Langdolch der Geister"),
-                Equipment(ap = 25, vp = 15, hp = 0, mp = 0, weight = 10, ranged = true, element = Element.NONE, requiredWaffenschmiede = 1, name = "Stabschleuder"),
+                Equipment(ap = 25, vp = 15, hp = 0, mp = 0, weight = 10, ranged = true, element = Element.NONE, requiredWaffenschmiede = 2, name = "Stabschleuder"),
                 Equipment(ap = 20, vp = 5, hp = 5, mp = 0, weight = 12, ranged = false, element = Element.AIR, requiredWaffenschmiede = 2, name = "Wirbelwindfaust"),
                 Equipment(ap = 10, vp = 5, hp = 3, mp = 0, weight = 10, ranged = false, element = Element.ICE, requiredWaffenschmiede = 2, name = "Eisdolch"),
                 Equipment(ap = -40, vp = -20, hp = 0, mp = 15, weight = 7, ranged = false, element = Element.FIRE, requiredWaffenschmiede = 2, name = "Novizenstab"),
