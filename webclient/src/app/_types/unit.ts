@@ -19,7 +19,7 @@ export interface Unit {
 const units: Array<Unit> = [
     unit(CUSTOM_UNIT_NAME, UnitType.NONE, 0, true, Element.NONE, 0, 0, 0, 0, 0),
     unit("Späher", UnitType.HUMAN, 20, true, Element.NONE, 10, 30, 55, 32, 0),
-    unit("Kreuzritter", UnitType.HUMAN, 120, false, Element.NONE, 25, 120, 75, 215, 0),
+    unit("Kreuzritter", UnitType.HUMAN, 160, false, Element.NONE, 25, 120, 75, 215, 0),
     unit("Drachenjäger", UnitType.HUMAN, 270, true, Element.NONE, 40, 300, 120, 300, 0),
     unit("Pikenier", UnitType.HUMAN, 350, false, Element.NONE, 60, 1050, 350, 540, 0),
     unit("Erzengel", UnitType.HUMAN, 430, false, Element.AIR, 80, 780, 640, 930, 200),
